@@ -1,0 +1,28 @@
+h1. ForgeosCommerceFront
+
+ForgeosCommerceFront is an extension which add front fonctionnalities
+
+VERSION : 0.1.0
+
+h1. Prerequisites
+
+h2. Plugins
+
+* ForgeosCore
+* ForgeosCMS
+* ForgeosCommerce
+
+h2. Initialize
+
+  <pre><code>
+  $ ./script/generate plugin_migration forgeos_commerce_front
+  </code></pre>
+
+Launch FogeosCommerce Install :
+
+  <pre><code>
+  $ rake forgeos:commerce_front:install
+  </code></pre>
+
+
+Powered by "Webpulser":http://www.webpulser.com

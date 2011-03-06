@@ -1,0 +1,34 @@
+.myaccount
+  %h3
+    Mon compte
+  .clear
+  .suiviorder.grid_16
+    .titresuivi.grid_4
+      %h4
+        = t(:order_list)
+    .clear
+    - unless @orders.empty?
+      %table
+        - @orders.each do |order|
+          %thead
+            %tr
+              %th= t(:order_reference)
+              %th= t(:order_date)
+              %th= t(:shipping)
+              %th= t(:amount)
+              %th= t(:status)
+          %tbody
+            %tr
+              %td
+              = "Commande n°#{order.id}"
+            .datecommande.commande
+              = order.created_at.strftime('%d/%m/%Y')
+            .detailscommande.commande
+              = t(:articles, :count => order.order_details.count)
+              pour un montant de
+              = price_with_currency(order.total)
+              TTC
+            .livraisoncommande.commande
+              = t(order.status, :scope => :order_status)
+            .detailcommande.commande
+              = link_to('Détail', order_path(order, :format => :pdf))

@@ -1,0 +1,22 @@
+- form_for(@person_session || PersonSession.new, :url => person_session_path, :html => { :class => 'account-form' }) do |f|
+  .person-session-form
+    .grid_2
+      = f.label :email, "#{t(:email)} <span class='required'>*</span>"
+    .grid_5
+      = f.text_field :email
+    .clear
+    .grid_2
+      = f.label :password, "#{t(:password)} <span class='required'>*</span>"
+    .grid_5
+      = f.password_field :password
+    .clear
+    //.grid_7
+    //  = link_to t('get_forgotten_password').capitalize, new_password_reset_path
+    .grid_5.prefix_2
+      * #{t(:mandatory_field, :count => 2)}
+      %br
+      = f.check_box :remember_me, :value => '1'
+      = f.label :remember_me, t(:remember_me).capitalize, :class => 'remember'
+      %br
+      = f.submit t('log.in.action').capitalize, :class => 'submit_contact'
+    .clear

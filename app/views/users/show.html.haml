@@ -1,0 +1,96 @@
+.myaccount
+  %h2
+    Mon compte
+  %h3
+    Suivi de mes commandes
+  .suiviorder.grid_16
+    .titresuivi.grid_4
+    .clear
+    - unless @orders.empty?
+      .tableausuivi
+        - @orders.each do |order|
+          .commandesuivi
+            .numcommande.commande
+              = "Commande n°#{order.id}"
+            .datecommande.commande
+              = order.created_at.strftime('%d/%m/%Y')
+            .detailscommande.commande
+              = t(:articles, :count => order.order_details.count)
+              pour un montant de
+              = price_with_currency(order.total)
+              TTC
+            .livraisoncommande.commande
+              = t(order.status, :scope => :order_status)
+            .detailcommande.commande
+              = link_to('Détail', order_path(order, :format => :pdf))
+          .clear
+      .clear
+  .clear
+
+  - form_for(@user, :html => { :multipart => true }) do |f|
+    .profile
+      %h3
+        Mon profil
+      %p
+        Identifiant : #{current_user.send(Forgeos::CONFIG[:login]['login_field'])}
+      .grid_4
+        = password_fields(f)
+      - if Forgeos::CONFIG[:newsletter]['active']
+        .checknews.grid_5
+          = f.check_box(:newsletter)
+          = f.label(:newsletter, t(:i_want, :scope => :newsletter))
+          .clear
+        .grid_4
+          - current_user.build_avatar unless current_user.avatar
+          - f.fields_for :avatar do |avatar|
+            .pic_field
+              = avatar.file_field :uploaded_data
+
+        .avatar.grid_2
+          .imgavatar
+            = display_avatar(current_user.avatar)
+          .clear
+          .switchavatar
+            = link_to(t(:change_avatar), '#')
+          .clear
+        .clear
+      .clear
+
+    .coord
+      %h3
+        Mes coordonnées
+      .account_form
+        .grid_4
+          = f.label :civility, "Civilité <em>*</em>"
+          = f.select :civility, options_for_select([['Mr',0],['Mme',1],['Mlle',2],['Société',3]])
+        .grid_4
+          = f.label :company, "Entreprise"
+          = f.text_field :company
+        .clear
+
+        .grid_4
+          = f.label :lastname, "#{t(:lastname)} <em>*</em>"
+          = f.text_field :lastname
+
+        .grid_4
+          = f.label :firstname, "#{t(:firstname)} <em>*</em>"
+          = f.text_field :firstname
+        .clear
+
+        .grid_4
+          = f.label :email, "Email <em>*</em>"
+          = f.text_field :email
+        .grid_4
+          = f.label :birthday, "Date de naissance"
+          = f.date_select :birthday, :start_year => 1900
+        .clear
+      .clear
+
+      .adresse.grid_16
+      = select_tag :choice_address_delivery, options_for_select(current_user.addresses.collect{|adr| [adr.designation, adr.id]}), :prompt => 'Choisissez une adresse', :class => 'address_select', :onchange => "if(confirm(\"Voulez-vous sauvegarder l'adresse actuelle?\")){$('form.edit_user').submit()};"
+      = link_to_remote('Ajouter', :url => new_user_address_path)
+      - @user.build_address_delivery unless @user.address_delivery
+      = render :partial => '/addresses/address_form', :locals => {:address => @user.address_delivery}
+    .clear
+    = f.submit t('action', :scope => [:user, :update])
+.clear

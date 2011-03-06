@@ -1,0 +1,51 @@
+fr:
+  mandatory_field:
+    one: champ obligatoire
+    other: champs obligatoires
+  person_session:
+    action:
+      new: Identification
+  user:
+    one: utilisateur
+    other: utilisateurs
+    action:
+      show: Mon compte
+      create: Créer mon compte
+      activate: Activation du compte
+      reset_password: Modifier mon mot de passe
+    create:
+      success: Votre compte a bien été créé. Vous allez recevoir un email afin d'activer votre compte.
+      error: Une erreur s'est produite lors de la creation de votre compte.
+      action: Créer le compte
+    activate:
+      success: Votre compte a bien été activé.
+      error: Une erreur s'est produite lors de l'activation de votre compte.
+    new_password:
+      success: Votre mot de passe a bien été mis à jour
+      error: Votre mot de passe a bien été mis à jour
+    part:
+      order_list: suivi de mes commandes
+      profile: mon profil
+  newsletter:
+    i_want: Je souhaite recevoir la newsletter
+    create:
+      success: Vous êtes maintenant inscrit à la newsletter.
+    subscription: Inscription à la Newsletter
+  authlogic:
+    error_messages:
+      login_blank: doit être rempli(e)
+      login_not_found: n'est pas valide
+      login_invalid: should use only letters, numbers, spaces, and .-_@ please.
+      consecutive_failed_logins_limit_exceeded: Consecutive failed logins limit exceeded, account is disabled.
+      email_invalid: n'est pas valide
+      password_blank: doit être rempli(e)
+      password_invalid: n'est pas valide
+      not_active: Votre compte n'est pas actif
+      not_confirmed: Your account is not confirmed
+      not_approved: Your account is not approved
+
+  emails:
+    reset_password:
+      subject: Réinitialisation de votre mot de passe
+    newsletter:
+      subject: Inscription à la newsletter

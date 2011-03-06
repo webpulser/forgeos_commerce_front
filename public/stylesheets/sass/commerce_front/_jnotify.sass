@@ -1,0 +1,65 @@
+.jnotify-container
+  position: fixed
+  top: 0
+  left: 0
+  width: 100%
+  z-index: 100000
+  .jnotify-notification
+    position: relative
+    .jnotify-background
+      position: absolute
+      top: 0
+      left: 0
+      width: 100%
+      height: 100%
+      background-color: #e3f0db
+      filter: alpha(opacity = 90)
+      -moz-opacity: 0.90
+      opacity: 0.90
+      z-index: 1
+    a.jnotify-close
+      position: absolute
+      top: 2px
+      right: 5px
+      padding: 0 5px
+      font: bold 1.4em Arial,Helvetica,sans-serif
+      line-height: 1em
+      color: #567b1b
+      text-decoration: none
+      z-index: 3
+      cursor: pointer
+      &:link, &:visited, &:focus, &:hover
+        position: absolute
+        top: 2px
+        right: 5px
+        padding: 0 5px
+        font: bold 1.4em Arial,Helvetica,sans-serif
+        line-height: 1em
+        color: #567b1b
+        text-decoration: none
+        z-index: 3
+        cursor: pointer
+    .jnotify-message
+      position: relative
+      z-index: 2
+      padding: 20px
+      text-align: center
+      color: #567b1b
+      font: bold 1.4em Arial,Helvetica,sans-serif
+      line-height: 1.2em
+      *
+        font-size: 1em
+  .jnotify-notification-error
+    .jnotify-background
+      background-color: #d79eac
+    .jnotify-close, .jnotify-message
+      color: #a72947 !important
+  .jnotify-notification-warning
+    .jnotify-background
+      background-color: #fff7d1
+    .jnotify-close, .jnotify-message
+      color: #c2a928 !important
+
+/* notification type == "error"
+
+/* notification type == "warning"

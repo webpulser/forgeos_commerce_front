@@ -1,0 +1,27 @@
+multilang: true # true/false
+default_locale: en
+login:
+  login_field: email
+account:
+  active: true # true/false
+  password_generated: true # true/false
+  avatar:
+    active: true # true/false
+addresses:
+  active: true # true/false
+  user_type: 'b2c' # b2b/b2c/b2b&b2c
+  multiple_addresses: true # true/false
+  mandatory_fields: [phone]
+  available_countries: [us, uk, fr]
+  default_country: us # ISO CODE
+checkout:
+  active: true # true/false
+  payment: [cheque] # cheque/CMCIC
+wishlist:
+  active: true # true/false
+cart:
+  active: true # true/false
+newsletter:
+  active: true
+notifications:
+  active: true
