@@ -1,0 +1,98 @@
+.checkout_links
+  margin-top: 20px
+  background-color: #f4f4f4
+  height: 40px
+  margin-left: auto
+  margin-right: auto
+  +borderCorner()
+  width: 385px
+  .checkout_link
+    +borderCorner()
+    display: block
+    float: left
+    margin-right: 20px
+    line-height: 40px
+    padding: 0 5px
+    &.checkout_link_0
+      margin-left: 20px
+    span
+      a
+        color: #666666
+        text-decoration: none
+    &:hover
+      background-color: #ff9900
+      span
+        a
+          color: white
+    &.current_checkout_link
+      background-color: #ff9900
+      span
+        a
+          color: white
+          
+          
+.cart_content
+  p
+    text-align: none !important
+  #cart_table
+    width: 100%
+    margin: 10px 0
+    thead
+      tr
+        border:
+          bottom: 1px solid #FF6600
+        th
+          padding: 5px
+    tbody
+      tr
+        background:
+          color: #EEE
+        margin-bottom: 20px
+        border:
+          bottom: 20px solid #FFF
+        td
+          &.article
+            .product_info
+              a
+                display: block
+              span
+                display: block
+          vertical-align: middle
+          border:
+            right: 1px dotted #CCC
+          padding: 10px
+          &.center
+            text-align: center
+          &.total_price
+            border:
+              right: 0
+          .delete_product
+            background:
+              image: url('/images/commerce_front/cart/delete.png')
+              repeat: no-repeat
+              position: center
+            height: 30px
+            width: 30px
+            display: block
+            text-indent: -9999px
+            margin: auto
+          .less_product, .more_product
+            background:
+              image: url('/images/commerce_front/cart/change_quantity.png')
+              repeat: no-repeat
+              position: center
+            text-align: center
+            color: #FFF
+            font-weight: bold
+            float: left
+            margin: 2px 5px 0
+            width: 27px
+            height: 17px
+            line-height: 17px
+          .quantity
+            border: 1px solid #EEE
+            +borderCorner()
+            float: left
+            margin: 0
+            width: 40px
+            text-align: center

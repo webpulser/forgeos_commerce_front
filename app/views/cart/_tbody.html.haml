@@ -1,0 +1,31 @@
+- unless current_cart.carts_products.nil? || current_cart.carts_products.empty?
+  - current_cart.carts_products.group_by(&:product_id).each do |cart_product_group|
+    - cart_product = cart_product_group[1].first
+    - product = cart_product.product
+    %tr{:id => product.sku}
+      %td.delete.center
+        = remove_cart_product_link(cart_product.id)
+      %td.article
+        .grid_4
+          = image_tag '/images/commerce_front/product.jpg'
+        %p.grid_3.product_info
+          = link_to product.name, [:seo, product]
+          %span Catégorie
+          %span 
+            Réf.
+            = product.sku
+      %td.quantity.center
+        = link_to_function '-', remote_function(:url => {:controller => 'cart', :action => 'update_quantity', :id => cart_product.id, :quantity => cart_product.quantity-1}), :class=> 'less_product'
+        = text_field_tag 'quantity', cart_product.quantity, :onchange => remote_function( :url =>  {:controller => 'cart', :action => 'update_quantity', :id => cart_product.id }, :with => "'quantity='+$(this).val()"), :class => 'quantity'
+        = link_to_function '+', remote_function({:url => {:controller => 'cart', :action => 'update_quantity', :id => cart_product.id, :quantity => cart_product.quantity+1}}), :class=> 'more_product'
+        
+        
+        
+        
+        
+      %td.price.center
+        = price_with_currency(product.price)
+      %td.reduction.center
+        = price_with_currency(product.reduction)
+      %td.total_price.center
+        = price_with_currency(product.new_price*cart_product.quantity)

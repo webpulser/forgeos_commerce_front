@@ -1,0 +1,35 @@
+= step_order(0)
+.clear
+
+- unless current_cart.carts_products.empty?
+  .grid_24.cart_content
+    %table#cart_table
+      %thead
+        %tr
+          %th{ :colspan => 2 } Produit
+          %th Quantité
+          %th Prix unitaire
+          %th Réduction
+          %th Prix total
+      %tbody#tbody
+        = render :partial => 'tbody'
+  
+  .grid_24#total
+    .grid_9.prefix_1
+      = display_voucher
+      #voucher_message
+        - if current_cart.voucher
+          - voucher = VoucherRule.find_by_id(current_cart.voucher)
+          %span= "Code validé ! #{voucher.name}" unless voucher.nil?
+      
+    .grid_10.prefix_3.omega#cart_total
+      = render :partial => 'total'
+          
+- else
+  Il n'y a pas de produit dans votre panier
+
+.clear
+
+
+%br
+%br
