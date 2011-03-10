@@ -7,7 +7,7 @@ class Notifier < ActionMailer::Base
 
   def validation_user_account(user, password)
     application = Setting.first.name
-    subject "[#{application}] #{t(:subject, :scope => [:email, :new_account])}"
+    subject "[#{application}] #{I18n.t(:subject, :scope => [:emails, :new_account])}"
     from Setting.first.email
     recipients user.email
     content_type "text/html"
@@ -18,7 +18,7 @@ class Notifier < ActionMailer::Base
 
   def password_reset_instructions(user, password)
     application = Setting.first.name
-    subject "[#{application}] #{t(:subject, :scope => [:email, :reset_password])}"
+    subject "[#{application}] #{I18n.t(:subject, :scope => [:emails, :reset_password])}"
     from Setting.first.email
     recipients user.email
     content_type "text/html"
@@ -28,7 +28,7 @@ class Notifier < ActionMailer::Base
 
   def newsletter(email)
     application = Setting.first.name
-    subject "[#{application}] #{t(:subject, :scope => [:email, :newsletter])}"
+    subject "[#{application}] #{I18n.t(:subject, :scope => [:emails, :newsletter])}"
     recipients email
     from Setting.first.email
     content_type "text/html"

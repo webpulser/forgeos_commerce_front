@@ -1,7 +1,7 @@
 .account-area
-  .grid_8.login
+  .grid_7.login
     %h2= t('new', :scope => [:person_session, :action])
     = render :partial => '/person_sessions/form'
-  .prefix_1.grid_7.omega.alpha
+  .prefix_2.grid_7
     %h2= t('create', :scope => [:user, :action])
     = render :partial => '/users/form_create', :locals => {:btn => 'create'}

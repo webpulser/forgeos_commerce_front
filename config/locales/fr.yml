@@ -8,6 +8,7 @@ fr:
   user:
     one: utilisateur
     other: utilisateurs
+    uid: identifiant
     action:
       show: Mon compte
       create: Créer mon compte
@@ -49,3 +50,5 @@ fr:
       subject: Réinitialisation de votre mot de passe
     newsletter:
       subject: Inscription à la newsletter
+  administrator_warning: Attention vous êtes en administrateur.
+  not_authorized: Vous n'êtes pas autorisé à acceder à cette ressource.

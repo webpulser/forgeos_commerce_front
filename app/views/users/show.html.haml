@@ -30,9 +30,9 @@
   - form_for(@user, :html => { :multipart => true }) do |f|
     .profile
       %h3
-        Mon profil
+        = t(:action, :scope => [:user, :show])
       %p
-        Identifiant : #{current_user.send(Forgeos::CONFIG[:login]['login_field'])}
+        #{t(:uid, :scope => :user)} : #{current_user.send(Forgeos::CONFIG[:login]['login_field'])}
       .grid_4
         = password_fields(f)
       - if Forgeos::CONFIG[:newsletter]['active']
@@ -41,18 +41,12 @@
           = f.label(:newsletter, t(:i_want, :scope => :newsletter))
           .clear
         .grid_4
+
+        .avatar
           - current_user.build_avatar unless current_user.avatar
           - f.fields_for :avatar do |avatar|
-            .pic_field
-              = avatar.file_field :uploaded_data
-
-        .avatar.grid_2
-          .imgavatar
             = display_avatar(current_user.avatar)
-          .clear
-          .switchavatar
-            = link_to(t(:change_avatar), '#')
-          .clear
+            = avatar.file_field :uploaded_data
         .clear
       .clear
 
@@ -61,10 +55,10 @@
         Mes coordonnées
       .account_form
         .grid_4
-          = f.label :civility, "Civilité <em>*</em>"
+          = f.label :civility, "t(:civility) <em>*</em>"
           = f.select :civility, options_for_select([['Mr',0],['Mme',1],['Mlle',2],['Société',3]])
         .grid_4
-          = f.label :company, "Entreprise"
+          = f.label :company, t(:company)
           = f.text_field :company
         .clear
 
@@ -78,19 +72,34 @@
         .clear
 
         .grid_4
-          = f.label :email, "Email <em>*</em>"
+          = f.label :email, "t(:email) <em>*</em>"
           = f.text_field :email
         .grid_4
-          = f.label :birthday, "Date de naissance"
+          = f.label :birthday, t(:birthday)
           = f.date_select :birthday, :start_year => 1900
         .clear
+        //.grid_4
+        //  = f.label :phone, "#{t(:phone)} <em>*</em>"
+        //  = f.text_field :phone
+        //.grid_4
+        //  = f.label :other_phone, "#{:other_phone}"
+        //  = f.text_field :other_phone
+        //.clear
       .clear
 
-      .adresse.grid_16
-      = select_tag :choice_address_delivery, options_for_select(current_user.addresses.collect{|adr| [adr.designation, adr.id]}), :prompt => 'Choisissez une adresse', :class => 'address_select', :onchange => "if(confirm(\"Voulez-vous sauvegarder l'adresse actuelle?\")){$('form.edit_user').submit()};"
-      = link_to_remote('Ajouter', :url => new_user_address_path)
-      - @user.build_address_delivery unless @user.address_delivery
-      = render :partial => '/addresses/address_form', :locals => {:address => @user.address_delivery}
+    .address
+      - multiple_addresses = Forgeos::CONFIG[:addresses]['multiple_addresses']
+      - if multiple_addresses
+        - @user.build_address_delivery unless @user.address_delivery
+        = render :partial => '/addresses/multiple_address_form', :locals => {:address => @user.address_invoice}
+      - else
+        %h3= t(:my_address, :count => 1)
+        - f.object.build_address_invoice unless f.object.address_invoice
+        - f.fields_for :address_invoice do |address|
+          = render :partial => '/addresses/address_form', :locals => {:f => address}
+    .requiredinfo
+      * #{t(:mandatory_field, :count => 2)}
     .clear
-    = f.submit t('action', :scope => [:user, :update])
+      .clear
+      = f.submit t('action', :scope => [:user, :update])
 .clear

@@ -1,37 +1,27 @@
 - content_for(:title, t('action', :scope => [:user, :create]))
 - form_for @user, :url => user_path, :html => { :autocomplete => 'on'} do |f|
-  %fieldset
-    .row-section
-      .row
-        .section.civility_section
-          %label
-            = t(:civility, :count => 1)
-            %span.required *
-          .text-holder
-            %span M
-            = f.radio_button :civility, 0
-            %span Mme
-            = f.radio_button :civility, 1
-            %span Mlle
-            = f.radio_button :civility, 2
-            %span Société
-            = f.radio_button :civility, 3
-      - [:lastname, :firstname, :email].each do |key|
-        .grids_block
-          .grid_2.alpha.right
-            = f.label key, "#{t(key)} <span class='required'>*<span>"
-          .grid_4.omega
-            = f.text_field key
-          .clear
-      - unless Forgeos::CONFIG[:account]['password_generated']
-        = password_fields(f)
-    .grids_block
-      .grid_5.omega.prefix_2.required.alpha
-        * #{t(:mandatory_field, :count => 2)}
+  .person-session-form
+    .grid_2
+      = f.label(:civility, "#{t(:civility, :count => 1)} <span class='required'>*<span>")
+    .grid_4
+      %span M
+      = f.radio_button :civility, 0
+      %span Mme
+      = f.radio_button :civility, 1
+      %span Mlle
+      = f.radio_button :civility, 2
+      %span Société
+      = f.radio_button :civility, 3
+    - [:lastname, :firstname, :email].each do |key|
+      .grid_2
+        = f.label key, "#{t(key)} <span class='required'>*<span>"
+      .grid_4
+        = f.text_field key
       .clear
-    .grids_block
-      .grid_5.omega.prefix_2.alpha
-        = f.submit t('action', :scope => [:user, :create])
-    %p.cgv_block.grid_5.omega.prefix_1.alpha
-      - block = Block.find_by_single_key('cgv')
-      = block.content if block
+    - unless Forgeos::CONFIG[:account]['password_generated']
+      = password_fields(f)
+    .grid_4.prefix_2
+      = f.submit t('action', :scope => [:user, :create])
+    .clear
+%p.mandatory-field
+  * #{t(:mandatory_field, :count => 2)}

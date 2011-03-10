@@ -1,27 +1,15 @@
-- form_for(address) do |f|
-  = link_to_remote(t(:delete), :url => user_address_path(f.object), :method => :delete, :confirm => "Voulez-vous vraiment supprimer cette adresse ?") unless f.object.new_record?
-  .grid_8
-    = f.label :address, "#{t(:address, :count => 1)} <em>*</em>"
-    = f.text_field :address
-    = f.text_field :address_2
-  .clear
-  .grid_2
-    = f.label :zip_code, "#{:zip_code} <em>*</em>"
-    = f.text_field :zip_code, :class => 'textpg'
-  .grid_3
-    = f.label :city, "#{t(:city)} <em>*</em>"
-    = f.text_field :city
-  .grid_3
-    = f.label :country_id, "#{t(:country)} <em>*</em>"
-    = f.select :country_id, options_for_countries(f.object.country_id)
-  .clear
-  //.grid_4
-  //  = f.label :phone, "#{t(:phone)} <em>*</em>"
-  //  = f.text_field :phone
-  //.grid_4
-  //  = f.label :other_phone, "#{:other_phone}"
-  //  = f.text_field :other_phone
-  //.clear
-  .requiredinfo
-    * #{t(:mandatory_field, :count => 2)}
-  .clear
+.grid_8
+  = f.label :address, "#{t(:address, :count => 1)} <em>*</em>"
+  = f.text_field :address
+  = f.text_field :address_2
+.clear
+.grid_2
+  = f.label :zip_code, "#{:zip_code} <em>*</em>"
+  = f.text_field :zip_code, :class => 'textpg'
+.grid_3
+  = f.label :city, "#{t(:city)} <em>*</em>"
+  = f.text_field :city
+.grid_3
+  = f.label :country_id, "#{t(:country)} <em>*</em>"
+  = f.select :country_id, options_for_countries(f.object.country_id)
+.clear
