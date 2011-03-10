@@ -1,5 +1,6 @@
 class UsersController < ApplicationController
   before_filter :login_required, :only => [:show, :update]
+  before_filter :get_user, :only => [:show, :update]
   before_filter :get_orders, :only => [:show, :update]
   before_filter :manage_address, :only => [:update]
   after_filter :update_newsletter, :only => [:update]
@@ -29,7 +30,6 @@ class UsersController < ApplicationController
   def create
     cookies.delete :auth_token
     @user = User.new(params[:user])
-    puts("\033[01;33m#{@user.inspect}\033[0m")
     password = nil
     if Forgeos::CONFIG[:account]['password_generated']
       password = generate_password(10)
@@ -43,7 +43,6 @@ class UsersController < ApplicationController
     else
       #@user.password = nil
       #@user.password_confirmation = nil
-      puts("\033[01;33m#{@user.errors.full_messages.join(', ')}\033[0m")
       if @user.errors.on(:civility)
         flash[:error] = 'Veuillez préciser votre civilité'
       else
@@ -62,6 +61,7 @@ class UsersController < ApplicationController
           return redirect_to(:root)
         end
         user.activate
+        user.reset_perishable_token!
         PersonSession.create(@user, true)
         flash[:notice] = I18n.t('success', :scope => [:user, :activate])
         return redirect_to(:action => :show)
@@ -111,7 +111,6 @@ class UsersController < ApplicationController
     @user = current_user
     unless not @user.is_a?(User)
       if @user.is_a?(Administrator)
-        debugger
         flash[:warning] = t(:administrator_warning)
         if request.referer
           return redirect_to(:back)

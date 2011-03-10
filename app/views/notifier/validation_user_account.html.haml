@@ -1,9 +1,9 @@
 %p
-  %span#email
-    Email : #{@user.email}
+  Email :
+  %span#email= @user.email
   %br
-  %span#password
-    Password: #{@password}
+  Password:
+  %span#password= @password
 %p
   - link_to(url = activate_user_url(:activation_code => @user.perishable_token), :id => 'activation') do
     = url

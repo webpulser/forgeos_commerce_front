@@ -4,14 +4,14 @@
     .grid_2
       = f.label(:civility, "#{t(:civility, :count => 1)} <span class='required'>*<span>")
     .grid_4
-      %span M
       = f.radio_button :civility, 0
-      %span Mme
+      %span M
       = f.radio_button :civility, 1
-      %span Mlle
+      %span Mme
       = f.radio_button :civility, 2
-      %span Société
+      %span Mlle
       = f.radio_button :civility, 3
+      %span Société
     - [:lastname, :firstname, :email].each do |key|
       .grid_2
         = f.label key, "#{t(key)} <span class='required'>*<span>"
