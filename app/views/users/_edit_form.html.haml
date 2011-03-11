@@ -1,8 +1,8 @@
 .myaccount
   - form_for(@user, :url => user_path, :html => { :multipart => true }) do |f|
-    %h2
-      = t(:profile, :scope => [:user, :part]).capitalize
     .profile
+      %h2
+        = t(:profile, :scope => [:user, :part]).capitalize
       .grid_5
         - login_field = Forgeos::CONFIG[:login]['login_field']
         = f.label(login_field, t(:uid, :scope => :user).capitalize)
