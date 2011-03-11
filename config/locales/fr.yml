@@ -50,5 +50,9 @@ fr:
       subject: Réinitialisation de votre mot de passe
     newsletter:
       subject: Inscription à la newsletter
+  company: entreprise
   administrator_warning: Attention vous êtes en administrateur.
   not_authorized: Vous n'êtes pas autorisé à acceder à cette ressource.
+  my_address:
+    one: mon adresse
+    other: mes adresses

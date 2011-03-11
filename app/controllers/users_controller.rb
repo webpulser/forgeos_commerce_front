@@ -3,7 +3,6 @@ class UsersController < ApplicationController
   before_filter :get_user, :only => [:show, :update]
   before_filter :get_orders, :only => [:show, :update]
   before_filter :manage_address, :only => [:update]
-  after_filter :update_newsletter, :only => [:update]
   around_filter FieldErrorProcChanger.new(
     Proc.new do |html_tag, instance|
       error_message = instance.object.errors.on(instance.method_name)
@@ -77,7 +76,7 @@ class UsersController < ApplicationController
     else
       flash[:error] = I18n.t('error', :scope => [:user, :update])
     end
-    render(:action => :index)
+    render(:action => :show)
   end
 
   private
@@ -96,20 +95,9 @@ class UsersController < ApplicationController
     end
   end
 
-  def update_newsletter
-    if @user.newsletter_exist?
-      unless @user.newsletter
-        newsletter = Newsletter.find_by_email(@user.email)
-        newsletter.destroy
-      end
-    elsif @user.newsletter
-      Newsletter.create!(:email => @user.email)
-    end
-  end
-
   def get_user
     @user = current_user
-    unless not @user.is_a?(User)
+    unless @user.is_a?(User)
       if @user.is_a?(Administrator)
         flash[:warning] = t(:administrator_warning)
         if request.referer

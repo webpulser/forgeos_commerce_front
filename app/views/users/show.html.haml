@@ -1,6 +1,6 @@
 .myaccount
   %h2
-    Mon compte
+    = t(:show, :scope => [:user, :action])
   %h3
     Suivi de mes commandes
   .suiviorder.grid_16
@@ -27,10 +27,10 @@
       .clear
   .clear
 
-  - form_for(@user, :html => { :multipart => true }) do |f|
+  - form_for(@user, :url => user_path, :html => { :multipart => true }) do |f|
     .profile
       %h3
-        = t(:action, :scope => [:user, :show])
+        Mon profil
       %p
         #{t(:uid, :scope => :user)} : #{current_user.send(Forgeos::CONFIG[:login]['login_field'])}
       .grid_4
@@ -55,7 +55,7 @@
         Mes coordonnées
       .account_form
         .grid_4
-          = f.label :civility, "t(:civility) <em>*</em>"
+          = f.label :civility, "#{t(:civility, :count => 1)} <em>*</em>"
           = f.select :civility, options_for_select([['Mr',0],['Mme',1],['Mlle',2],['Société',3]])
         .grid_4
           = f.label :company, t(:company)
@@ -72,7 +72,7 @@
         .clear
 
         .grid_4
-          = f.label :email, "t(:email) <em>*</em>"
+          = f.label :email, "#{t(:email)} <em>*</em>"
           = f.text_field :email
         .grid_4
           = f.label :birthday, t(:birthday)
