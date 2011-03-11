@@ -1,0 +1,64 @@
+.myaccount
+  - form_for(@user, :url => user_path, :html => { :multipart => true }) do |f|
+    %h2
+      = t(:profile, :scope => [:user, :part]).capitalize
+    .profile
+      .grid_5
+        - login_field = Forgeos::CONFIG[:login]['login_field']
+        = f.label(login_field, t(:uid, :scope => :user).capitalize)
+        = f.text_field(login_field)
+      .clear
+      //.grid_5
+      //  = password_fields(f)
+      - if Forgeos::CONFIG[:newsletter]['active']
+        .grid_5
+          = f.check_box(:newsletter)
+          = f.label(:newsletter, t(:i_want, :scope => :newsletter).capitalize)
+        .clear
+
+      - if Forgeos::CONFIG[:account]['avatar']['active']
+        .avatar
+          - current_user.build_avatar unless current_user.avatar
+          - f.fields_for :avatar do |avatar|
+            = display_avatar(current_user.avatar)
+            = avatar.file_field :uploaded_data
+        .clear
+    .coord
+      %h2
+        = t(:infos, :scope => [:user, :part]).capitalize
+      .grid_5
+        = f.label :civility, "#{t(:civility, :count => 1).capitalize} <em>*</em>"
+        %br
+        = f.select :civility, options_for_select([['Mr',0],['Mme',1],['Mlle',2],['Société',3]])
+      .clear
+
+      .grid_4
+        = f.label :lastname, "#{t(:lastname).capitalize} <em>*</em>"
+        %br
+        = f.text_field :lastname
+      .clear
+      .grid_4
+        = f.label :firstname, "#{t(:firstname).capitalize} <em>*</em>"
+        %br
+        = f.text_field :firstname
+      .clear
+      .grid_4
+        = f.label :phone, "#{t(:phone).capitalize} <em>*</em>"
+        %br
+        = f.text_field :phone
+      .clear
+
+    .address
+      - multiple_addresses = Forgeos::CONFIG[:addresses]['multiple_addresses']
+      - if multiple_addresses
+        - @user.build_address_delivery unless @user.address_delivery
+        = render :partial => '/addresses/multiple_address_form', :locals => {:address => @user.address_invoice}
+      - else
+        %h2= t(:address, :count => 1, :scope => [:user, :part]).capitalize
+        - f.object.build_address_invoice unless f.object.address_invoice
+        - f.fields_for :address_invoice do |address|
+          = render :partial => '/addresses/address_form', :locals => {:f => address}
+    .requiredinfo
+      * #{t(:mandatory_field, :count => 2)}
+    = f.submit t('action', :scope => [:user, :update])
+  .clear

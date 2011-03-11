@@ -25,8 +25,11 @@ fr:
       success: Votre mot de passe a bien été mis à jour
       error: Votre mot de passe a bien été mis à jour
     part:
-      order_list: suivi de mes commandes
       profile: mon profil
+      infos: mes coordonnées
+      address:
+        one: mon adresse
+        other: mes adresses
   newsletter:
     i_want: Je souhaite recevoir la newsletter
     create:
@@ -53,6 +56,4 @@ fr:
   company: entreprise
   administrator_warning: Attention vous êtes en administrateur.
   not_authorized: Vous n'êtes pas autorisé à acceder à cette ressource.
-  my_address:
-    one: mon adresse
-    other: mes adresses
+  phone: télephone

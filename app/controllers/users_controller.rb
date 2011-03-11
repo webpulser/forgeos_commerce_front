@@ -1,7 +1,6 @@
 class UsersController < ApplicationController
   before_filter :login_required, :only => [:show, :update]
   before_filter :get_user, :only => [:show, :update]
-  before_filter :get_orders, :only => [:show, :update]
   before_filter :manage_address, :only => [:update]
   around_filter FieldErrorProcChanger.new(
     Proc.new do |html_tag, instance|
@@ -110,11 +109,6 @@ class UsersController < ApplicationController
         return render(:text => '', :status => 401, :layout => true)
       end
     end
-  end
-
-  def get_orders
-    # XXX Must be paginated ?
-    @orders = @user.orders.all(:conditions => {:status => ['paid','shipped']})
   end
 
 end
