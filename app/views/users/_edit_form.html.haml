@@ -28,23 +28,19 @@
         = t(:infos, :scope => [:user, :part]).capitalize
       .grid_5
         = f.label :civility, "#{t(:civility, :count => 1).capitalize} <em>*</em>"
-        %br
         = f.select :civility, options_for_select([['Mr',0],['Mme',1],['Mlle',2],['Société',3]])
       .clear
 
-      .grid_4
+      .grid_5
         = f.label :lastname, "#{t(:lastname).capitalize} <em>*</em>"
-        %br
         = f.text_field :lastname
       .clear
-      .grid_4
+      .grid_5
         = f.label :firstname, "#{t(:firstname).capitalize} <em>*</em>"
-        %br
         = f.text_field :firstname
       .clear
-      .grid_4
+      .grid_5
         = f.label :phone, "#{t(:phone).capitalize} <em>*</em>"
-        %br
         = f.text_field :phone
       .clear
 

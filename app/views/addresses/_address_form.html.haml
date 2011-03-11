@@ -1,23 +1,18 @@
 .grid_5
   = f.label :address, "#{t(:address, :count => 1).capitalize} <em>*</em>"
-  %br
   = f.text_field :address
-  %br
   = f.text_field :address_2
 .clear
 .grid_2
   = f.label :zip_code, "#{t(:zip_code).capitalize} <em>*</em>"
-  %br
   = f.text_field :zip_code
 .clear
 .grid_5
   = f.label :city, "#{t(:city).capitalize} <em>*</em>"
-  %br
   = f.text_field :city
 .clear
 
 .grid_5
   = f.label :country_id, "#{t(:country).capitalize} <em>*</em>"
-  %br
   = f.select :country_id, options_for_countries(f.object.country_id)
 .clear
