@@ -60,7 +60,7 @@ class UsersController < ApplicationController
         end
         user.activate
         user.reset_perishable_token!
-        PersonSession.create(@user, true)
+        PersonSession.create(user, true)
         flash[:notice] = I18n.t('success', :scope => [:user, :activate])
         return redirect_to(:action => :show)
       end
