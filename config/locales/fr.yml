@@ -33,6 +33,8 @@ fr:
       address:
         one: mon adresse
         other: mes adresses
+  order:
+    not_found: La commande n'a pas été trouvée.
   newsletter:
     i_want: Je souhaite recevoir la newsletter
     create:
