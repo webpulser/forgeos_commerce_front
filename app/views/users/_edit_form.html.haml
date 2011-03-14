@@ -9,7 +9,8 @@
         = f.text_field(login_field)
       .clear
       //.grid_5
-      //  = password_fields(f)
+      = password_fields(f)
+      .clear
       - if Forgeos::CONFIG[:newsletter]['active']
         .grid_5
           = f.check_box(:newsletter)
