@@ -1,4 +1,5 @@
 ActionController::Routing::Routes.draw do |map|
+  map.resources :users
   map.resource :user, :member => { :activate => :get } do |user|
     user.resources :orders
     user.resources :addresses

@@ -1,0 +1,3 @@
+- if @free_product_ids && !@free_product_ids.empty?
+  - Product.find_all_by_id(@free_product_ids).each do |free_product|
+    = "Produit #{free_product.name} gratuit !"

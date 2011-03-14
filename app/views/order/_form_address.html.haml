@@ -1,0 +1,44 @@
+= address.hidden_field :designation, :value => (address.object.designation or 'default')
+= address.hidden_field :civility, :value => 0
+= address.hidden_field :id, :value => current_cart_address.id unless current_cart_address.nil?
+
+.champ.grid_6
+  .grid_2
+    = address.label :name, "Nom #{content_tag(:em, '*')}"
+  = address.text_field  :name
+.champ.grid_6
+  .grid_2
+    = address.label :firstname, "Prénom #{content_tag(:em, '*')}"
+  = address.text_field  :firstname
+.champ.grid_6
+  .grid_2
+    = address.label :address, "Adresse #{content_tag(:em, '*')}"
+  = address.text_field  :address
+.champ.grid_6
+  .grid_2
+    = address.label :zip_code, "Code postal #{content_tag(:em, '*')}"
+  = address.text_field  :zip_code
+.champ.grid_6
+  .grid_2
+    = address.label :city, "Ville #{content_tag(:em, '*')}"
+  = address.text_field  :city
+
+.champ.grid_6
+  .grid_2
+    = address.label :country_id, "Pays #{content_tag(:em, '*')}"
+  - countries = Country.find_all_by_printable_name(['France','Belgium'], :select => 'id,printable_name', :order=>'printable_name')
+  - options = options_from_collection_for_select(countries, :id, :printable_name,  (!address.object.nil? && !address.object.country.nil?) ? address.object.country.id : 258419522  )
+  = address.select :country_id, options
+
+- if address.object.form
+  - address.object.form.form_attributes.each do |form_attribute|
+    - if form_attribute.is_a? TextAttribute
+      .champ.grid_6
+        .grid_2
+          %label
+            = form_attribute.name
+            - if form_attribute.validate
+              %em *
+        = text_field_tag "order[#{address.object.type.underscore}_attributes[form_attributes[#{form_attribute.access_method}]]]", address.object.form_attributes[form_attribute.access_method]
+      
+.clear

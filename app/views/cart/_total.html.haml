@@ -5,24 +5,16 @@
     .grid_6.alpha.omega
       %span.space
         &nbsp;
-      = price_with_currency(current_cart.total(true, false))
+      = price_with_currency(current_cart.total({:cart_voucher_discount => false, :cart_special_offer_discount => false, :product_voucher_discount => false, :patronage => false}))
     .clear
     .clear
   .block
     .grid_4.alignright
-      Réduction
+      Réduction panier
     .grid_6.alpha.omega
       %span.space
         &nbsp;
-      = price_with_currency(current_cart.special_offer_discount ? -current_cart.special_offer_discount : 0)
-    .clear
-  .block
-    .grid_4.alignright
-      Frais de port
-    .grid_6.alpha.omega
-      %span.space
-        &nbsp;
-      =# price_with_currency(current_cart.shipping_price)
+      = price_with_currency(current_cart.discount)
     .clear
   %br
   #total_block.block
@@ -30,7 +22,7 @@
       Prix total TTC
     .grid_6.alpha.omega
       %span.big_price
-        #{price_with_currency(current_cart.total(true,true))} TTC
+        #{price_with_currency(current_cart.total)} TTC
     .clear
 
 .order_block
@@ -38,7 +30,7 @@
     - link_to root_path do 
       Continuer vos achats
   .grid_6.alpha.omega
-    - form_tag url_for(:controller => 'order', :action => 'new'), :method => :post do
+    - form_tag url_for(:controller => 'order', :action => 'deliveries'), :method => :post do
       %span.space
         &nbsp;
       = submit_tag 'Commander'

@@ -18,14 +18,9 @@
         = link_to_function '-', remote_function(:url => {:controller => 'cart', :action => 'update_quantity', :id => cart_product.id, :quantity => cart_product.quantity-1}), :class=> 'less_product'
         = text_field_tag 'quantity', cart_product.quantity, :onchange => remote_function( :url =>  {:controller => 'cart', :action => 'update_quantity', :id => cart_product.id }, :with => "'quantity='+$(this).val()"), :class => 'quantity'
         = link_to_function '+', remote_function({:url => {:controller => 'cart', :action => 'update_quantity', :id => cart_product.id, :quantity => cart_product.quantity+1}}), :class=> 'more_product'
-        
-        
-        
-        
-        
       %td.price.center
-        = price_with_currency(product.price)
+        = price_with_currency(product.old_price)
       %td.reduction.center
-        = price_with_currency(product.reduction)
+        = price_with_currency(product.discount)
       %td.total_price.center
-        = price_with_currency(product.new_price*cart_product.quantity)
+        = price_with_currency(cart_product.total)

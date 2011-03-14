@@ -1,0 +1,28 @@
+= step_order(1)
+.clear
+
+.grid_24
+  %h2 1 - Mode de livraison
+  
+.clear  
+.grid_24
+  - form_for(@order, :url => {:controller => 'order', :action => 'new'}) do |order|
+    .grid_12
+      %h2 2 - Adresse de facturation
+      %span Cette commande sera facturée à cette adresse
+      - unless order.object.address_invoice
+        - unless current_user.address_invoice.nil?
+          - order.object.build_address_invoice(current_user.address_invoice.attributes)
+        - else
+          - order.object.build_address_invoice
+      - order.fields_for :address_invoice do |address|
+        = render :partial => 'form_address', :locals => {:address => address, :current_cart_address => current_cart.address_invoice}
+      
+    .grid_12
+      %h2 3 - Adresse de livraison
+      %span Cette commande sera livrée à cette adresse
+      - order.object.build_address_delivery unless order.object.address_delivery
+      - order.fields_for :address_delivery do |address|
+        = render :partial => 'form_address', :locals => {:address => address, :current_cart_address => current_cart.address_delivery}
+    .clear
+    = order.submit 'Mode de paiement'

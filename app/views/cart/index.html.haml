@@ -21,15 +21,12 @@
         - if current_cart.voucher
           - voucher = VoucherRule.find_by_id(current_cart.voucher)
           %span= "Code validé ! #{voucher.name}" unless voucher.nil?
-      
+      #free_products
+        = render :partial => 'free_products'
     .grid_10.prefix_3.omega#cart_total
       = render :partial => 'total'
-          
+
 - else
   Il n'y a pas de produit dans votre panier
 
 .clear
-
-
-%br
-%br

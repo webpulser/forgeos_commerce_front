@@ -38,14 +38,14 @@ class CartController < ApplicationController
       end
     end
 
-    #voucher
-    #special_offer
-    #get_transporters
-
+    special_offer
+    voucher
+    
     if request.xhr?
       render(:update) do |page|
         page.replace_html 'tbody', :partial => 'tbody'
         page.replace_html 'cart_total', :partial => 'total'
+        page.replace_html 'free_products', :partial => 'free_products'
       end
     end
   end
@@ -53,6 +53,8 @@ class CartController < ApplicationController
   def delete_product
     cart_product = current_cart.carts_products.find_by_id(params[:id])
     current_cart.carts_products.find_all_by_product_id(cart_product.product_id).collect(&:delete) unless cart_product.nil?
+    special_offer
+    voucher
     if request.xhr?
       render(:update) do |page|
         page.replace_html 'tbody', :partial => 'tbody'
@@ -66,9 +68,10 @@ class CartController < ApplicationController
     if voucher.nil?
       session.delete(:voucher_code)
       render(:update) do |page|
-        page.replace_html 'voucher_message' , "<span>Le code promo #{@voucher_code} est invalide.</span>"
+        page.replace_html 'voucher_message' , "<span>Le code promo #{@voucher_code} est invalide2.</span>"
         page.replace_html 'tbody',  :partial => 'tbody'
         page.replace_html 'cart_total', :partial => 'total'
+        page.replace_html 'free_products', :partial => 'free_products'
       end
     else
       session[:voucher_code] = voucher.code
@@ -76,6 +79,7 @@ class CartController < ApplicationController
         page.replace_html 'voucher_message' , "<span>Code validé ! #{voucher.name}</span>"
         page.replace_html 'tbody',  :partial => 'tbody'
         page.replace_html 'cart_total', :partial => 'total'
+        page.replace_html 'free_products', :partial => 'free_products'
       end
     end
   end
