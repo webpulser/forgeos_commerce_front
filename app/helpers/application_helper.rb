@@ -12,17 +12,38 @@ module ApplicationHelper
     password_field = options[:password_field] || :password
     password_confirmation_field = options[:password_confirmation_field] || :password_confirmation
     fields =  ''
-    fields += form.label(password_field, t(:password))
+    fields += '<div class="grid_5 password_field">'
+    fields += form.label(password_field, t(:password).capitalize)
     fields += form.password_field(password_field)
-    fields += '<br />'
-    fields += form.label(password_confirmation_field, t(:password_confirmation))
+    fields += "<div class=\"valid\">"
+    fields += "<div class=\"right_password\"></div>"
+    fields += "<div class=\"wrong_password\"></div>"
+    fields += "</div>"
+    fields += '</div>'
+    fields += '<div class="grid_5">'
+    fields += form.label(password_confirmation_field, t(:password_confirmation).capitalize)
     fields += form.password_field(password_confirmation_field)
-    fields += '<br />'
-    fields += "<div class=\"validchamp\">"
-    fields += "<div class=\"right_password\">"
-    fields += image_tag('commerce_front/infos/right.png')
-    fields += "<div class=\"wrong_password\">"
-    fields += image_tag('commerce_front/infos/false.png')
+    fields += "</div>"
+    fields += "<script type=\"text/javascript\">
+    $('#user_password').bind('keyup', function(){
+      if ($(this).val().length > 6){
+        $(this).addClass('right_password');
+        $(this).removeClass('wrong_password');
+      } else{
+        $(this).addClass('wrong_password');
+        $(this).removeClass('right_password');
+      }
+    });
+    $('#user_password_confirmation').bind('keyup', function() {
+      if($(this).val() == $('#user_password').val()){
+        $(this).addClass('right_password');
+        $(this).removeClass('wrong_password');
+      } else{
+        $(this).addClass('wrong_password');
+        $(this).removeClass('right_password');
+      }
+    });
+    </script>"
     fields
   end
 
