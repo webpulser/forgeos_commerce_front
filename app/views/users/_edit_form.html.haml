@@ -12,7 +12,7 @@
       = password_fields(f)
       .clear
       - if Forgeos::CONFIG[:newsletter]['active']
-        .grid_5
+        .grid_5.newsletter
           = f.check_box(:newsletter)
           = f.label(:newsletter, t(:i_want, :scope => :newsletter).capitalize)
         .clear
