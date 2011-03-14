@@ -13,7 +13,7 @@ class PersonSessionsController < ApplicationController
         session[:return_to] = nil
         redirect_to(redirect)
       else
-        redirect_to(:action => :show)
+        redirect_to(user_path)
       end
       flash[:notice] = t('log.in.success').capitalize
     else

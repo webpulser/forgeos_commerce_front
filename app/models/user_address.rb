@@ -2,6 +2,7 @@ require File.join(Rails.plugins[:forgeos_commerce].directory,'app','models','use
 class UserAddress < Address
 
   Forgeos::CONFIG[:addresses]['mandatory_fields'].each do |fields|
+    puts("\033[01;33mvalidate #{fields.inspect}\033[0m")
     validates_presence_of fields
   end
 

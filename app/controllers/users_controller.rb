@@ -1,8 +1,7 @@
 class UsersController < ApplicationController
   before_filter :login_required, :only => [:show, :update]
-  before_filter :get_orders, :only => [:show]
+  before_filter :get_user, :only => [:show, :update]
   before_filter :manage_address, :only => [:update]
-  after_filter :update_newsletter, :only => [:update]
   around_filter FieldErrorProcChanger.new(
     Proc.new do |html_tag, instance|
       error_message = instance.object.errors.on(instance.method_name)
@@ -20,7 +19,6 @@ class UsersController < ApplicationController
   ), :only => [:create, :update]
 
   def show
-    @user = current_user
   end
 
   def new
@@ -30,12 +28,11 @@ class UsersController < ApplicationController
   def create
     cookies.delete :auth_token
     @user = User.new(params[:user])
+    password = nil
     if Forgeos::CONFIG[:account]['password_generated']
       password = generate_password(10)
-      @user.attributes = {
-        :password => password,
-        :password_confirmation => password
-      }
+      @user.password = password
+      @user.password_confirmation = password
     end
     if @user.save
       Notifier.deliver_validation_user_account(@user, password)
@@ -44,7 +41,11 @@ class UsersController < ApplicationController
     else
       #@user.password = nil
       #@user.password_confirmation = nil
-      flash[:error] = I18n.t('error', :scope => [:user, :create])
+      if @user.errors.on(:civility)
+        flash[:error] = 'Veuillez préciser votre civilité'
+      else
+        flash[:error] = I18n.t('error', :scope => [:user, :create])
+      end
       render :action => 'new'
     end
   end
@@ -58,7 +59,8 @@ class UsersController < ApplicationController
           return redirect_to(:root)
         end
         user.activate
-        PersonSession.create(@user, true)
+        user.reset_perishable_token!
+        PersonSession.create(user, true)
         flash[:notice] = I18n.t('success', :scope => [:user, :activate])
         return redirect_to(:action => :show)
       end
@@ -68,13 +70,12 @@ class UsersController < ApplicationController
   end
 
   def update
-    @user = current_user
     if @user.update_attributes(params[:user])
       flash[:notice] = I18n.t('success', :scope => [:user, :update])
     else
       flash[:error] = I18n.t('error', :scope => [:user, :update])
     end
-    render(:action => :index)
+    render(:action => :show)
   end
 
   private
@@ -93,20 +94,21 @@ class UsersController < ApplicationController
     end
   end
 
-  def update_newsletter
-    if @user.newsletter_exist?
-      unless @user.newsletter
-        newsletter = Newsletter.find_by_email(@user.email)
-        newsletter.destroy
+  def get_user
+    @user = current_user
+    unless @user.is_a?(User)
+      if @user.is_a?(Administrator)
+        flash[:warning] = t(:administrator_warning)
+        if request.referer
+          return redirect_to(:back)
+        else
+          return redirect_to(:root)
+        end
+      else
+        flash[:error] = t(:not_authorized)
+        return render(:text => '', :status => 401, :layout => true)
       end
-    elsif @user.newsletter
-      Newsletter.create!(:email => @user.email)
     end
-  end
-
-  def get_orders
-    # XXX Must be paginated ?
-    @orders = current_user.orders.all(:conditions => {:status => ['paid','shipped']})
   end
 
 end

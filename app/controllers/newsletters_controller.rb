@@ -3,14 +3,14 @@ class NewslettersController < ApplicationController
 
   def create
     newsletter = Newsletter.new(params[:newsletter])
+    newsletter.email = newsletter.email.to_s.strip
     if newsletter.save
-      flash[:notice] = "Vous êtes maintenant inscrit à la newsletter de confort du fil"
+      flash[:notice] = t(:success, :scope => [:create, :newsletter])
       @page = Page.find_by_single_key('inscription_reussie')
-      return redirect_to :back
     else
       flash[:error] = newsletter.errors.full_messages.first
-      return redirect_to :back
     end
+    return redirect_to :back
   end
 
 end

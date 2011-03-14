@@ -8,6 +8,7 @@ fr:
   user:
     one: utilisateur
     other: utilisateurs
+    uid: identifiant
     action:
       show: Mon compte
       create: Créer mon compte
@@ -17,6 +18,9 @@ fr:
       success: Votre compte a bien été créé. Vous allez recevoir un email afin d'activer votre compte.
       error: Une erreur s'est produite lors de la creation de votre compte.
       action: Créer le compte
+    update:
+      success: Votre compte a bien été mis à jour.
+      error: Une erreur s'est produite lors de la mise à jour de vos informations personnelles
     activate:
       success: Votre compte a bien été activé.
       error: Une erreur s'est produite lors de l'activation de votre compte.
@@ -24,8 +28,13 @@ fr:
       success: Votre mot de passe a bien été mis à jour
       error: Votre mot de passe a bien été mis à jour
     part:
-      order_list: suivi de mes commandes
       profile: mon profil
+      infos: mes coordonnées
+      address:
+        one: mon adresse
+        other: mes adresses
+  order:
+    not_found: La commande n'a pas été trouvée.
   newsletter:
     i_want: Je souhaite recevoir la newsletter
     create:
@@ -49,3 +58,7 @@ fr:
       subject: Réinitialisation de votre mot de passe
     newsletter:
       subject: Inscription à la newsletter
+  company: entreprise
+  administrator_warning: Attention vous êtes en administrateur.
+  not_authorized: Vous n'êtes pas autorisé à acceder à cette ressource.
+  phone: télephone

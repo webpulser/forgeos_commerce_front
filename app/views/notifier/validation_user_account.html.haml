@@ -1,70 +1,9 @@
-.body{:style=>"border: 0 none; width: 600px; padding-left: 20px; padding-right: 20px; margin-left: auto; margin-right: auto;"}
-  .header{:style=>"text-align: center;"}
-    %a{:href=>"#{@url}", :style=>"border: 0 none; outline: 0;"}
-      %img{:src=>"#{@url}images/front/logo.png", :style=>"border: 0 none;"}
-    %span{:style=>"border: 0 none; display: block; text-align: left; font-size: 13px; font-weight: bold; padding-top: 30px; color: #333333;"}
-      ="#{@user.fullname}, Bienvenue chez Rue du Store, site marchand spécialisé en stores sur-mesure."
-  .content{:style=>"padding-left: 30px; padding-right: 30px; padding-top: 15px; padding-bottom: 15px; background-color: #f1f1f1; margin-top: 30px;"}
-    %p{:style=>"font-size: 12px; color: #333333;"}
-      Voici vos informations de connexion :
-    %p{:style=>"font-size: 12px; color: #333333;"}
-      %span{:style=>"color: #ff6600; font-weight: bold;"}
-        E-mail :
-      = @user.email
-      %br
-      %span{:style=>"color: #ff6600; font-weight: bold;"}
-        Mot de passe :
-      = @password
-  .infos{:style=>"font-size: 12px;"}
-    %p{:style=>"color: #333333;"}
-      Pour activer votre compte, veuillez cliquer sur ce lien :
-    %p{:style=>"color: #333333;"}
-      %a{:href=>"#{@activation_url}", :style=>"border: 0 none; display: block; outline: 0;"}
-        = @activation_url
-    %p{:style=>"color: #333333;"}
-      Nous vous conseillons de personnaliser votre mot de passe dès votre première connexion.
-    %p{:style=>"color: #333333;"}
-      Notre Service client est ouvert de 9h à 18h du lundi au vendredi au
-      %span{:style=>"color: #FF6600;"}
-        06 08 40 88 45
-      ou par mail à :
-      %span{:style=>"color: #FF6600;"}
-        contact@ruedustore.fr
-    %p{:style=>"color: #333333;"}
-      A très bientôt,
-      %br
-      L’équipe Rue du Store
-
-  .section{:style=>"background-color: #f1f1f1; margin-top: 50px; position: relative;"}
-    .whois.info{:style=>"text-align: center; position: relative; float: left; width: 220px; padding-left: 55px;"}
-      %a{:href=>"#{@url}mon-compte", :style=>"border: 0 none; outline: 0; color: #333333; text-decoration: none; display: block; position: absolute; top: -23px;"}
-        %img{:src=>"#{@url}images/front/apropos/ico-qui.png", :style=>"border: 0 none; display: block; padding-left: 70px;"}
-      %h2{:style=>"font-size: 12px; margin-top: 25px; font-weight: bold; color: #333333;"}
-        %a{:href=>"#{@url}mon-compte", :style=>"border: 0 none; outline: 0; color: #333333; text-decoration: none; display: block;"}
-          Un compte vous permet :
-      %ul{:style=>"padding: 0;"}
-        %li{:style=>"font-size: 11px; color: #666666;"}
-          de suivre vos commandes
-        %li{:style=>"font-size: 11px; color: #666666;"}
-          d’enregistrer vos produits préférés
-        %li{:style=>"font-size: 11px; color: #666666;"}
-          de nous faire part de vos commentaires
-
-    .advantage.info{:style=>"text-align: center; position: relative; float: left; width: 210px; padding-left: 60px;"}
-      %a{:href=>"#{@url}questions/meilleur-prix", :style=>"border: 0 none; color: #333333; text-decoration: none; display: block; position: absolute; top: -23px; outline: 0;"}
-        %img{:src=>"#{@url}images/front/apropos/ico-adv.png", :style=>"border: 0 none; display: block; padding-left: 85px;"}
-      %h2{:style=>"font-size: 12px; color:#333333; margin-top: 25px; font-weight: bold;"}
-        %a{:href=>"#{@url}questions/meilleur-prix", :style=>"border: 0 none; outline: 0; color: #333333; text-decoration: none; display: block;"}
-          Nos objectifs :
-      %ul{:style=>"padding: 0;"}
-        %li{:style=>"font-size: 11px; color: #666666;"}
-          des prix abordables
-        %li{:style=>"font-size: 11px; color: #666666;"}
-          votre store est unique et de qualité
-        %li{:style=>"font-size: 11px; color: #666666;"}
-          créer son store sur-mesure, c’est simple
-
-    .clear{:style=>"background: none repeat scroll 0 0 transparent; border: 0 none; clear: both; display: block; float: none; font-size: 0; height: 0; margin: 0; overflow: hidden; padding: 0; visibility: hidden; width: 0;"}
-.footer{:style=>"display: block; float: left; font-size: 10px; padding-top: 20px; text-align:center; color: #333333;"}
-  = render :partial => "footer"                       
-
+%p
+  Email :
+  %span#email= @user.email
+  %br
+  Password:
+  %span#password= @password
+%p
+  - link_to(url = activate_user_url(:activation_code => @user.perishable_token), :id => 'activation') do
+    = url
