@@ -84,6 +84,10 @@ class CartController < ApplicationController
     end
   end
     
+  def get_cart_items_count
+    render :text => "#{current_cart.carts_products.count} articles"
+  end  
+    
 private
   def check_voucher_code
     @voucher_code = params[:voucher_code] || session[:voucher_code]
