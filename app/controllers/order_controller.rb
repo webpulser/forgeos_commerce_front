@@ -1,7 +1,8 @@
 class OrderController < ApplicationController
   before_filter :must_be_logged, :only => [:new, :deliveries]
   before_filter :validate_and_update_address, :only => [:new]
-  
+  skip_before_filter :verify_authenticity_token, :only => [:call_autoresponse, :paypal_notification]
+
   def new
     special_offer
     voucher
@@ -14,6 +15,7 @@ class OrderController < ApplicationController
   def create
     special_offer
     voucher
+    
     @order = Order.from_cart(current_cart)
     #TODO check for config options
     if params[:validchk]
@@ -79,6 +81,18 @@ class OrderController < ApplicationController
     params[:order][:address_delivery_attributes] ||= current_cart.address_delivery.attributes if current_cart.address_delivery
     @order = Order.new(params[:order])
   end
+  
+  def paypal_notification
+    @order = Order.find_by_id(params[:invoice])
+    unless @order.nil?
+      if params[:payment_status] == "Completed" && params[:secret] == APP_CONFIG[:paypal_secret] && params[:receiver_email] == APP_CONFIG[:paypal_email] && params[:mc_gross].to_f == @order.total.to_f
+        Cart.destroy(@order.reference)
+        @order.pay!
+      end
+    end
+    render :nothing => true
+  end
+
   
 private
   def must_be_logged
