@@ -3,10 +3,72 @@ class OrderController < ApplicationController
   before_filter :validate_and_update_address, :only => [:new]
   
   def new
-    
-    
-    
-    @order = Order.new(params[:order])
+    special_offer
+    voucher
+    @order = Order.from_cart(current_cart)
+    unless @order.valid_for_payment?
+      render :action => 'new'
+    end
+  end
+  
+  def create
+    special_offer
+    voucher
+    @order = Order.from_cart(current_cart)
+    #TODO check for config options
+    if params[:validchk]
+      @order.payment_type = params[:payment_type]
+      if @order.valid_for_payment?
+        @order.save
+        case @order.payment_type
+          when "cmc_cic" ## carte bancaire
+            ##CMCIC form
+            @sReference = "#{rand(1000)}A#{@order.reference}" # Reference: unique, alphaNum (A-Z a-z 0-9), 12 characters max
+            @sMontant = '%.2f' % @order.total # Amount : format  "xxxxx.yy" (no spaces)
+            @sDevise  = "EUR" # Currency : ISO 4217 compliant
+            @sTexteLibre = ""
+            @sDate = DateTime.now().strftime("%d/%m/%Y:%H:%M:%S") # transaction date : format dd/mm/YYYY:HH:mm:ss
+            @sLangue = "FR" # Language of the company code
+            @sUrlOk = "#{request.protocol}#{request.host}#{CMCIC_URLOK}"
+            @sUrlKo = "#{request.protocol}#{request.host}#{CMCIC_URLKO}"
+            @sEmail = @order.user.email # customer email
+            @sOptions = ""
+            @oTpe = CMCIC_Tpe.new(@sLangue)
+            @oMac = CMCIC_Hmac.new(@oTpe)
+            @sChaineDebug = "V1.04.sha1.rb--[CtlHmac" + @oTpe.sVersion + @oTpe.sNumero + "]-" + @oMac.computeHMACSHA1("CtlHmac" + @oTpe.sVersion + @oTpe.sNumero) # Control String for support
+            @sChaineMAC = [@oTpe.sNumero, @sDate, "#{@sMontant}#{@sDevise}", @sReference, @sTexteLibre, @oTpe.sVersion, @sLangue, @oTpe.sCodeSociete, @sEmail, @sNbrEch, @sDateEcheance1, @sMontantEcheance1, @sDateEcheance2, @sMontantEcheance2, @sDateEcheance3, @sMontantEcheance3, @sDateEcheance4, @sMontantEcheance4, @sOptions].join("*") # Data to certify         
+          when "cyberplus"
+            @url = '/'
+            @site_id = "deded"
+            @mode = "TEST"
+            @page_action = "PAYMENT"
+            @action_mode = "INTERACTIVE"
+            @payment_config = "SINGLE"
+            @vads_version 	= "V2"
+            @sReference = "#{rand(1000)}A#{@order.reference}"
+            @sDevise  = "978"
+            @sMontant = '%.2f' % @order.total*100
+            @key = "sdsdfgsdfgsdfg"
+            values = [
+              @site_id,
+              @mode,
+              @payment,
+              @action_mode,
+              @payment_config,
+              @vads_version,
+              @sReference,
+              @sDevise,
+              @sMontant,
+            ]
+            values = values.sort.join('+')
+            @sChaineMAC = values + @key
+        end
+      end
+    else
+      #TODO use trnaslations
+      flash[:error] = "Vous devez accepter les conditions générales de vente"
+      render :action => 'new'
+    end
   end
   
   def deliveries

@@ -1,0 +1,48 @@
+.total_block
+  .block
+    .grid_4.alignright
+      Sous total panier
+    .grid_6.alpha.omega
+      %span.space
+        &nbsp;
+      = price_with_currency(@order.total({:cart_voucher_discount => false, :cart_special_offer_discount => false, :product_voucher_discount => false, :patronage => false}))
+    .clear
+    .clear
+  .block
+    .grid_4.alignright
+      Réduction panier
+    .grid_6.alpha.omega
+      %span.space
+        &nbsp;
+      = price_with_currency(@order.discount)
+    .clear
+  %br
+  #total_block.block
+    .grid_4.alignright
+      Prix total TTC
+    .grid_6.alpha.omega
+      %span.big_price
+        #{price_with_currency(@order.total)} TTC
+    .clear
+
+.order_block
+  .grid_4.alignright
+    - link_to root_path do 
+      Continuer vos achats
+  .grid_6.alpha.omega
+    - #TODO Use trnaslations and config
+    - form_tag url_for(:controller => 'order', :action => 'create'), :method => :post do
+      %h4 Choisissez votre mode de paiement
+      .paiement
+        = radio_button_tag :payment_type, 'cyberplus', true
+        %label Par carte bancaire
+        %img{:src=>"/images/front/paiement/paiement-cb.png"}
+      .paiementpayp
+        = radio_button_tag :payment_type, 'paypal'
+        %label Par Paypal
+        %img{:src=>"/images/front/paiement/paiement-payp.png"}
+      .conditionpay
+        = check_box_tag("validchk")
+        %label J'accepte les conditions générales de vente
+      = submit_tag 'Commander'
+  .clear

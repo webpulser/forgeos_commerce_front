@@ -1,0 +1,26 @@
+= step_order(3)
+.clear
+
+- unless @order.order_details.empty?
+  .grid_24.cart_content
+    %table#cart_table
+      %thead
+        %tr
+          %th Produit
+          %th Quantité
+          %th Prix unitaire
+          %th Réduction
+          %th Prix total
+      %tbody#tbody
+        = render :partial => 'tbody'
+  
+  .grid_24#total
+    -#.grid_9.prefix_1
+      =# render :partial => 'free_products'
+    .grid_10.prefix_3.omega#cart_total
+      = render :partial => 'total'
+
+- else
+  Il n'y a pas de produit dans votre panier
+
+.clear

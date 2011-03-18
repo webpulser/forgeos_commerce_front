@@ -1,5 +1,5 @@
 - content_for(:title, t('action', :scope => [:user, :create]))
-- form_for @user, :url => user_path, :html => { :autocomplete => 'on'} do |f|
+- form_for @user, :html => { :autocomplete => 'on'} do |f|
   .person-session-form
     .grid_2
       = f.label(:civility, "#{t(:civility, :count => 1)} <span class='required'>*<span>")

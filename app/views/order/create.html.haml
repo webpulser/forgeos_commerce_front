@@ -1,0 +1,54 @@
+.grid_16
+  - case @order.payment_type
+  - when "cmc_cic"
+    %form{ :action => @oTpe.sUrlPaiement, :method => "post",  :id => "payment_form"}
+      - current_url = "/" + request.path_parameters['controller'] + "/" + request.path_parameters['action']
+      = hidden_field_tag "version", @oTpe.sVersion
+      = hidden_field_tag "TPE",  @oTpe.sNumero
+      = hidden_field_tag "date", @sDate
+      = hidden_field_tag "montant", "#{@sMontant}#{@sDevise}"
+      = hidden_field_tag "reference",  @sReference
+      = hidden_field_tag "MAC", @oMac.computeHMACSHA1(@sChaineMAC)
+      = hidden_field_tag "url_retour", "#{request.protocol}#{request.host}#{current_url}"
+      = hidden_field_tag "url_retour_ok", @sUrlOk
+      = hidden_field_tag "url_retour_err", @sUrlKo
+      = hidden_field_tag "lgue", @sLangue
+      = hidden_field_tag "societe", @oTpe.sCodeSociete
+      = hidden_field_tag "texte-libre", @sTexteLibre
+      = hidden_field_tag "debug", @sChaineDebug
+      = hidden_field_tag "mail", @sEmail
+      = hidden_field_tag "bouton", @oTpe.sNumero
+    .payment_message
+      %p Vous aller être redirigé vers l'interface de paiement de la banque dans quelques instants
+      %img{:src => '/images/front/ajax-loader-2.gif'}
+
+  - when "cyberplus"
+    %form{ :action => @url, :method => "post",  :id => "payment_form"}
+      - current_url = "/" + request.path_parameters['controller'] + "/" + request.path_parameters['action']
+      = hidden_field_tag "vads_site_id", @site_id
+      = hidden_field_tag "vads_ctx_mode",  @mode
+      = hidden_field_tag "vads_amount", @sMontant
+      = hidden_field_tag "vads_currency", @sDevise
+      = hidden_field_tag "vads_page_action", @page_action
+      = hidden_field_tag "vads_action_mode", @action_mode
+      = hidden_field_tag "vads_payment_config", @payment_config
+      = hidden_field_tag "vads_version", @version
+      = hidden_field_tag "vads_trans_id", @sReference
+    .payment_message
+      %p Vous aller être redirigé vers l'interface de paiement de la banque dans quelques instants
+      %img{:src => '/images/front/ajax-loader-2.gif'}
+      
+  - when "paypal"
+    - form_tag APP_CONFIG[:paypal_url], :id => 'payment_form' do
+      = hidden_field_tag :cmd, "_s-xclick"
+      = hidden_field_tag :encrypted, @order.paypal_encrypted
+
+    .payment_message
+      %p Vous aller être redirigé vers Paypal dans quelques instants
+      %img{:src => '/images/front/ajax-loader-2.gif'}
+
+  .clear
+.clear
+
+= javascript_tag "jQuery('#payment_form').submit();"
+
