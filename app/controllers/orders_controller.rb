@@ -15,7 +15,8 @@ class OrdersController < ApplicationController
       flash[:error] = t(:not_authorized)
       return render :text => '', :status => 401
     end
-    @order = current_user.orders
+    #WTF ???
+    #@order = current_user.orders
   end
 
 private

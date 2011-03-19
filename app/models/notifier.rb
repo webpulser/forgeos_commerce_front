@@ -36,6 +36,7 @@ class Notifier < ActionMailer::Base
   end
   
   def order_confirmation(user, order)
+    application = Setting.first.name
     content_type "multipart/alternative"
     recipients user.email
     from Setting.first.email
@@ -50,22 +51,26 @@ class Notifier < ActionMailer::Base
       :address_delivery => order.address_delivery,
       :url => url_for(:action=>"root", :controller=>"url_catcher")
       )
-      
-#    current_body = {
-#      :user_fullname => order.user.fullname,
-#      :order_total => order.total,
-#      :order => order,
-#      :order_details => order.order_details
-#    }
+    
+    #TODO check PDFKIT and pdf mime_type  
+    current_body = {
+      :user_fullname => order.user.fullname,
+      :order_total => order.total,
+      :order => order,
+      :order_details => order.order_details,
+      :user => user,
+      :address_invoice => order.address_invoice,
+      :address_delivery => order.address_delivery
+    }
 
-#   attachment "application/pdf" do |a|
-#      a.filename = "facture_rue_du_store_#{order.reference}.pdf"
-#      html = render(:file => '/orders/show.html.haml', :body => current_body, :layout => 'order_pdf')
+   attachment "application/pdf" do |a|
+      a.filename = "#{I18n.t(:order, :scope => [:emails, :order_confirmation])}_#{application.parameterize('_')}_#{order.reference}.pdf"
+      html = render(:file => '/orders/show.pdf.haml', :body => current_body, :layout => 'order_pdf')
 
-#      kit = PDFKit.new(html, :title => "Commande #{order.reference}" )
-#      kit.stylesheets = ["#{RAILS_ROOT}/public/stylesheets/front/invoice-print.css" ]
-#      a.body = kit.to_pdf
-#    end
+      kit = PDFKit.new(html, :title => "#{I18n.t(:order, :scope => [:emails, :order_confirmation]).capitalize} #{order.reference}" )
+      kit.stylesheets = ["#{RAILS_ROOT}/public/stylesheets/front/invoice-print.css" ]
+      a.body = kit.to_pdf
+    end
   end
 
   private
