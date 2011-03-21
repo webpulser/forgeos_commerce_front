@@ -23,17 +23,10 @@
       %img{:src => '/images/front/ajax-loader-2.gif'}
 
   - when "cyberplus"
-    %form{ :action => @url, :method => "post",  :id => "payment_form"}
-      - current_url = "/" + request.path_parameters['controller'] + "/" + request.path_parameters['action']
-      = hidden_field_tag "vads_site_id", @site_id
-      = hidden_field_tag "vads_ctx_mode",  @mode
-      = hidden_field_tag "vads_amount", @sMontant
-      = hidden_field_tag "vads_currency", @sDevise
-      = hidden_field_tag "vads_page_action", @page_action
-      = hidden_field_tag "vads_action_mode", @action_mode
-      = hidden_field_tag "vads_payment_config", @payment_config
-      = hidden_field_tag "vads_version", @version
-      = hidden_field_tag "vads_trans_id", @sReference
+    - form_tag('https://systempay.cyberpluspaiement.com/vads-payment/', :autocomplete => 'off', :id => 'payment_form') do
+      - @payment.each do |key,value|
+        = hidden_field_tag key, value unless key == :key
+
     .payment_message
       %p Vous aller être redirigé vers l'interface de paiement de la banque dans quelques instants
       %img{:src => '/images/front/ajax-loader-2.gif'}
