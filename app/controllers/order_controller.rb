@@ -2,7 +2,7 @@ require 'sha1'
 class OrderController < ApplicationController
   before_filter :must_be_logged, :only => [:new, :deliveries]
   before_filter :validate_and_update_address, :only => [:new]
-  skip_before_filter :verify_authenticity_token, :only => [:call_autoresponse, :paypal_notification, :succes, :cancel]
+  skip_before_filter :verify_authenticity_token, :only => [:call_autoresponse, :paypal_notification, :success, :cancel]
 
   def new
     special_offer
@@ -140,12 +140,12 @@ class OrderController < ApplicationController
 
   
   def cancel
-    flash[:error] = 'Le paiement à été annulé'
+    flash[:error] = 'Le paiement a été annulé'
     redirect_to '/commande-anulee'
   end
 
   def success
-    flash[:error] = 'Le paiement à été validé'
+    flash[:success] = 'Le paiement a été validé'
     redirect_to '/commande-validee'
   end
   
