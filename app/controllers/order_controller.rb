@@ -20,11 +20,11 @@ class OrderController < ApplicationController
     @order = Order.from_cart(current_cart)
     #TODO check for config options
     if params[:validchk]
-      @order.payment_type = params[:payment_type]
+      @order.payment_type = t(params[:payment_type], :scope => 'payment')
       if @order.valid_for_payment?
         @order.save
         case @order.payment_type
-          when "cmc_cic" ## carte bancaire
+          when t("cmc_cic", :scope => 'payment') ## carte bancaire
             ##CMCIC form
             @sReference = "#{rand(1000)}A#{@order.reference}" # Reference: unique, alphaNum (A-Z a-z 0-9), 12 characters max
             @sMontant = '%.2f' % @order.total # Amount : format  "xxxxx.yy" (no spaces)
@@ -40,7 +40,7 @@ class OrderController < ApplicationController
             @oMac = CMCIC_Hmac.new(@oTpe)
             @sChaineDebug = "V1.04.sha1.rb--[CtlHmac" + @oTpe.sVersion + @oTpe.sNumero + "]-" + @oMac.computeHMACSHA1("CtlHmac" + @oTpe.sVersion + @oTpe.sNumero) # Control String for support
             @sChaineMAC = [@oTpe.sNumero, @sDate, "#{@sMontant}#{@sDevise}", @sReference, @sTexteLibre, @oTpe.sVersion, @sLangue, @oTpe.sCodeSociete, @sEmail, @sNbrEch, @sDateEcheance1, @sMontantEcheance1, @sDateEcheance2, @sMontantEcheance2, @sDateEcheance3, @sMontantEcheance3, @sDateEcheance4, @sMontantEcheance4, @sOptions].join("*") # Data to certify         
-          when "cyberplus"
+          when t("cyberplus", :scope => 'payment')
             ts = Time.now
 
             @payment = {

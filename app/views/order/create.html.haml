@@ -1,6 +1,6 @@
 .grid_16
   - case @order.payment_type
-  - when "cmc_cic"
+  - when t("cmc_cic", :scope => 'payment')
     %form{ :action => @oTpe.sUrlPaiement, :method => "post",  :id => "payment_form"}
       - current_url = "/" + request.path_parameters['controller'] + "/" + request.path_parameters['action']
       = hidden_field_tag "version", @oTpe.sVersion
@@ -22,7 +22,7 @@
       %p Vous aller être redirigé vers l'interface de paiement de la banque dans quelques instants
       %img{:src => '/images/front/ajax-loader-2.gif'}
 
-  - when "cyberplus"
+  - when t("cyberplus", :scope => 'payment')
     - form_tag('https://systempay.cyberpluspaiement.com/vads-payment/', :autocomplete => 'off', :id => 'payment_form') do
       - @payment.each do |key,value|
         = hidden_field_tag key, value unless key == :key
@@ -31,7 +31,7 @@
       %p Vous aller être redirigé vers l'interface de paiement de la banque dans quelques instants
       %img{:src => '/images/front/ajax-loader-2.gif'}
       
-  - when "paypal"
+  - when t("paypal", :scope => 'payment')
     - form_tag APP_CONFIG[:paypal_url], :id => 'payment_form' do
       = hidden_field_tag :cmd, "_s-xclick"
       = hidden_field_tag :encrypted, @order.paypal_encrypted
