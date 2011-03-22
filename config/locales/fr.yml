@@ -14,6 +14,7 @@ fr:
       create: Créer mon compte
       activate: Activation du compte
       new_password: Choisissez votre nouveau mot de passe
+      reset_password: valider
       forgotten_password: Vous avez perdu votre mot de passe ?
     create:
       success: Votre compte a bien été créé. Vous allez recevoir un email afin d'activer votre compte.

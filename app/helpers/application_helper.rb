@@ -13,7 +13,7 @@ module ApplicationHelper
     field_class = options[:field_class] || 'grid_5'
     password_confirmation_field = options[:password_confirmation_field] || :password_confirmation
     fields =  ''
-    fields += "<div class='#{:field_class} password_field'>"
+    fields += "<div class='#{field_class} password_field'>"
     fields += form.label(password_field, t(:password).capitalize)
     fields += form.password_field(password_field)
     fields += "<div class=\"valid\">"
