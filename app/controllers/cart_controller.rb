@@ -23,7 +23,7 @@ class CartController < ApplicationController
   
   ## delete or add a product
   def update_quantity
-    cart_product = current_cart.carts_products.find_by_id(params[:id])
+    cart_product = current_cart.cart_items.find_by_id(params[:id])
     unless cart_product.nil?
       cart_product_quantity = cart_product.quantity
       new_quantity = params[:quantity].to_i
@@ -53,8 +53,8 @@ class CartController < ApplicationController
   end
   
   def delete_product
-    cart_product = current_cart.carts_products.find_by_id(params[:id])
-    current_cart.carts_products.find_all_by_product_id(cart_product.product_id).collect(&:delete) unless cart_product.nil?
+    cart_product = current_cart.cart_items.find_by_id(params[:id])
+    current_cart.cart_items.find_all_by_product_id(cart_product.product_id).collect(&:delete) unless cart_product.nil?
     special_offer
     voucher
     if request.xhr?
@@ -87,7 +87,7 @@ class CartController < ApplicationController
   end
     
   def get_cart_items_count
-    render :text => "#{current_cart.carts_products.count} articles"
+    render :text => "#{current_cart.cart_items.count} articles"
   end  
     
 private
@@ -111,7 +111,7 @@ private
         @free_product_ids = []
         rule_builder.free_product_ids = @free_product_ids
         rule_builder.rules
-        current_cart.carts_products.each do |cart_product|
+        current_cart.cart_items.each do |cart_product|
           e.assert cart_product.product
         end
         e.assert current_cart
@@ -129,7 +129,7 @@ private
         rule_builder.code = @voucher_code || session[:voucher_code]
         rule_builder.free_product_ids = @free_product_ids
         rule_builder.rules
-        current_cart.carts_products.each do |cart_product|
+        current_cart.cart_items.each do |cart_product|
           e.assert cart_product.product
         end
         e.assert current_cart
