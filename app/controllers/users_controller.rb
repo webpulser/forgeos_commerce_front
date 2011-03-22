@@ -39,8 +39,6 @@ class UsersController < ApplicationController
       flash[:notice] = I18n.t('success', :scope => [:user, :create])
       redirect_to(login_path)
     else
-      #@user.password = nil
-      #@user.password_confirmation = nil
       if @user.errors.on(:civility)
         flash[:error] = 'Veuillez préciser votre civilité'
       else
@@ -77,6 +75,35 @@ class UsersController < ApplicationController
     end
     render(:action => :show)
   end
+
+  def forgotten_password
+  end
+
+  def reset_password
+    user = User.find_by_email(params[:email])
+    unless user
+      flash[:warning] = I18n.t('unknown_user', :scope => [:user, :reset_password], :email => user.email)
+      return redirect_to(:action => :forgotten_password)
+    end
+    begin
+      Notifier.deliver_reset_password(user)
+      flash[:notice] = I18n.t('success', :scope => [:user, :reset_password])
+    rescue StandardError
+      flash[:error] = I18n.t('error', :scope => [:user, :reset_password])
+    end
+    redirect_to(:root)
+  end
+
+  def new_password
+    @user = User.find_by_perishable_token(params[:user_token])
+    @user.activate
+    @user.reset_perishable_token!
+    unless @user
+      flash[:error] = I18n.t('error', :scope => [:user, :new_password])
+      redirect_to(:root)
+    end
+  end
+
 
   private
   def generate_password(size)
