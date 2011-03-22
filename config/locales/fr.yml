@@ -13,7 +13,7 @@ fr:
       show: Mon compte
       create: Créer mon compte
       activate: Activation du compte
-      new_password: Choisissez votre nouveau mot de passe
+      new_password: votre nouveau mot de passe
       reset_password: valider
       forgotten_password: Vous avez perdu votre mot de passe ?
     create:

@@ -10,7 +10,7 @@ module ApplicationHelper
 
   def password_fields(form, options={})
     password_field = options[:password_field] || :password
-    label_class = options[:label_class] || 'grid 2'
+    label_class = options[:label_class] || 'grid_2'
     field_class = options[:field_class] || 'grid_5'
     password_confirmation_field = options[:password_confirmation_field] || :password_confirmation
     fields =  ''
