@@ -10,8 +10,9 @@
     .grid_4
       = f.password_field :password
     .clear
-    //.grid_7
-    //  = link_to t('get_forgotten_password').capitalize, new_password_reset_path
+    .grid_4.prefix_2
+      - link_to forgotten_password_user_path, :id => 'reset_password_link' do
+        = t('get_forgotten_password').capitalize
     .grid_4.prefix_2
       = f.check_box :remember_me, :value => '1'
       = f.label :remember_me, t(:remember_me).capitalize, :class => 'remember'

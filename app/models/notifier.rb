@@ -16,14 +16,14 @@ class Notifier < ActionMailer::Base
     body[:password] = password
   end
 
-  def password_reset_instructions(user, password)
+  def reset_password(user)
     application = Setting.first.name
     subject "[#{application}] #{I18n.t(:subject, :scope => [:emails, :reset_password])}"
     from Setting.first.email
     recipients user.email
     content_type "text/html"
 
-    body :user => url
+    body :user => user
   end
 
   def newsletter(email)
@@ -34,7 +34,7 @@ class Notifier < ActionMailer::Base
     content_type "text/html"
     body[:email] = email
   end
-  
+
   def order_confirmation(user, order)
     application = Setting.first.name
     content_type "multipart/alternative"
@@ -42,7 +42,7 @@ class Notifier < ActionMailer::Base
     from Setting.first.email
     subject "[#{application}] #{I18n.t(:subject, :scope => [:emails, :order_confirmation])}"
     sent_on Time.now
-    
+
     part :content_type => 'text/html', :body => render_message(
       'order_confirmation',
       :user => user,
@@ -51,8 +51,8 @@ class Notifier < ActionMailer::Base
       :address_delivery => order.address_delivery,
       :url => url_for(:action=>"root", :controller=>"url_catcher")
       )
-    
-    #TODO check PDFKIT and pdf mime_type  
+
+    #TODO check PDFKIT and pdf mime_type
     current_body = {
       :user_fullname => order.user.fullname,
       :order_total => order.total,

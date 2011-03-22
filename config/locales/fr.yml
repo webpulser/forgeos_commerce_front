@@ -13,7 +13,8 @@ fr:
       show: Mon compte
       create: Créer mon compte
       activate: Activation du compte
-      reset_password: Modifier mon mot de passe
+      new_password: Choisissez votre nouveau mot de passe
+      forgotten_password: Vous avez perdu votre mot de passe ?
     create:
       success: Votre compte a bien été créé. Vous allez recevoir un email afin d'activer votre compte.
       error: Une erreur s'est produite lors de la creation de votre compte.
@@ -24,9 +25,12 @@ fr:
     activate:
       success: Votre compte a bien été activé.
       error: Une erreur s'est produite lors de l'activation de votre compte.
+    reset_password:
+      success: Un email vous a été envoyé avec les intructions afin de réinitialiser votre mot de passe
+      error: Une erreur est survenue lors de l'envoie de l'email
+      unknown_user: Aucun utilisateur n'est enregistré avec %{email}
     new_password:
-      success: Votre mot de passe a bien été mis à jour
-      error: Votre mot de passe a bien été mis à jour
+      error: Code d'identification invalide
     part:
       profile: mon profil
       infos: mes coordonnées
