@@ -5,7 +5,7 @@
     .grid_6.alpha.omega
       %span.space
         &nbsp;
-      = price_with_currency(current_cart.total({:cart_voucher_discount => false, :cart_special_offer_discount => false, :product_voucher_discount => false, :patronage => false}))
+      = price_with_currency(current_cart.total({:cart_voucher_discount => false, :cart_special_offer_discount => false, :product_voucher_discount => false, :patronage => false, :cart_packaging => false }))
     .clear
     .clear
   .block
@@ -17,6 +17,15 @@
       = price_with_currency(current_cart.discount)
     .clear
   %br
+  - if current_cart.packaging_price != 0
+    .block
+      .grid_3.alignleft
+        Frais d'emballage
+      .grid_3.alpha.omega.alignright
+        %span.space
+          &nbsp;
+        = price_with_currency(current_cart.packaging_price)
+      .clear
   #total_block.block
     .grid_4.alignright
       Prix total TTC

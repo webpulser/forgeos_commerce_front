@@ -27,8 +27,10 @@ class CartController < ApplicationController
     unless cart_product.nil?
       cart_product_quantity = cart_product.quantity
       new_quantity = params[:quantity].to_i
-      if cart_product.quantity < new_quantity ## add a product
-        if cart_product.product.stock >= new_quantity
+      if cart_product.quantity < new_quantity  ## add a product
+        if !cart_product.product.stop_sales
+          current_cart.add_product_id(cart_product.product_id, new_quantity-cart_product_quantity)
+        elsif cart_product.product.stock >= new_quantity
           current_cart.add_product_id(cart_product.product_id, new_quantity-cart_product_quantity)
         else
           flash[:quantity_warning] = "Le stock disponible est insuffisant."

@@ -59,7 +59,7 @@ class OrderController < ApplicationController
               :url_cancel => url_for(:action => 'cancel'),
               :url_success => url_for(:action => 'success'),
               :url_refused => url_for(:action => 'cancel'),
-              :url_return => cart_path,
+              :url_return => url_for(:action => 'new'),
               :url_referral => url_for(:action => 'new'),
               :order_id => @order.id
             }

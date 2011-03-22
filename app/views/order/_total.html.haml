@@ -17,6 +17,15 @@
       = price_with_currency(@order.discount)
     .clear
   %br
+    - if current_cart.packaging_price != 0
+    .block
+      .grid_3.alignleft
+        Frais d'emballage
+      .grid_3.alpha.omega.alignright
+        %span.space
+          &nbsp;
+        = price_with_currency(current_cart.packaging_price)
+      .clear
   #total_block.block
     .grid_4.alignright
       Prix total TTC
