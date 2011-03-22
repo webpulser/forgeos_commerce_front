@@ -10,19 +10,20 @@ module ApplicationHelper
 
   def password_fields(form, options={})
     password_field = options[:password_field] || :password
+    label_class = options[:label_class] || 'grid 2'
     field_class = options[:field_class] || 'grid_5'
     password_confirmation_field = options[:password_confirmation_field] || :password_confirmation
     fields =  ''
-    fields += "<div class='#{field_class} password_field'>"
+    fields += "<div class='#{label_class} password_field'>"
     fields += form.label(password_field, t(:password).capitalize)
-    fields += form.password_field(password_field)
-    fields += "<div class=\"valid\">"
-    fields += "<div class=\"right_password\"></div>"
-    fields += "<div class=\"wrong_password\"></div>"
-    fields += "</div>"
     fields += '</div>'
     fields += "<div class='#{field_class} password_field'>"
+    fields += form.password_field(password_field)
+    fields += '</div>'
+    fields += "<div class='#{label_class} password_field'>"
     fields += form.label(password_confirmation_field, t(:password_confirmation).capitalize)
+    fields += "</div>"
+    fields += "<div class='#{field_class} password_field'>"
     fields += form.password_field(password_confirmation_field)
     fields += "</div>"
     fields += "<script type=\"text/javascript\">

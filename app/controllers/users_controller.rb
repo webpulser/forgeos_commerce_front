@@ -96,12 +96,12 @@ class UsersController < ApplicationController
 
   def new_password
     @user = User.find_by_perishable_token(params[:user_token])
-    @user.activate
-    @user.reset_perishable_token!
     unless @user
       flash[:error] = I18n.t('error', :scope => [:user, :new_password])
       redirect_to(:root)
     end
+    @user.activate
+    @user.reset_perishable_token!
   end
 
 
