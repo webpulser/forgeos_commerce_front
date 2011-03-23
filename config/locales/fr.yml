@@ -44,6 +44,7 @@ fr:
     i_want: Je souhaite recevoir la newsletter
     create:
       success: Vous êtes maintenant inscrit à la newsletter.
+      invalid_email: L'email %{error}
     subscription: Inscription à la Newsletter
   authlogic:
     error_messages:
