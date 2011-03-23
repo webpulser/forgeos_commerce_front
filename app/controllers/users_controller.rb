@@ -82,7 +82,7 @@ class UsersController < ApplicationController
   def reset_password
     user = User.find_by_email(params[:email])
     unless user
-      flash[:warning] = I18n.t('unknown_user', :scope => [:user, :reset_password], :email => user.email)
+      flash[:warning] = I18n.t('unknown_user', :scope => [:user, :reset_password], :email => params[:email])
       return redirect_to(:action => :forgotten_password)
     end
     begin
