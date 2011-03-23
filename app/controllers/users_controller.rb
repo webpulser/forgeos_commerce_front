@@ -104,6 +104,21 @@ class UsersController < ApplicationController
     @user.reset_perishable_token!
   end
 
+  def update_password
+    @user = User.find_by_perishable_token(params[:user_token])
+    unless @user
+      flash[:error] = I18n.t('error', :scope => [:user, :new_password])
+      redirect_to(:root)
+    end
+    @user.reset_perishable_token!
+    if @user.update_attributes(params[:user].reject{|k, v| !k.to_s.match(/^password/)})
+      flash[:notice] = I18n.t('success', :scope => [:user, :update])
+      redirect_to(login_path)
+    else
+      flash[:error] = I18n.t('error', :scope => [:user, :update])
+      render(:action => :new_password)
+    end
+  end
 
   private
   def generate_password(size)
