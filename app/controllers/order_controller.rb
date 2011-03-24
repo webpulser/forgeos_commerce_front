@@ -162,7 +162,9 @@ class OrderController < ApplicationController
     @order = Order.find_by_id(params[:invoice])
     unless @order.nil?
       if params[:payment_status] == "Completed" && params[:secret] == APP_CONFIG[:paypal_secret] && params[:receiver_email] == APP_CONFIG[:paypal_email] && params[:mc_gross].to_f == @order.total.to_f
-        Cart.destroy(@order.reference)
+        if cart = Cart.find_by_id(@order.reference)
+          cart.destroy
+        end
         @order.pay!
       end
     end
