@@ -1,5 +1,5 @@
-- unless current_cart.carts_products.nil? || current_cart.carts_products.empty?
-  - current_cart.carts_products.group_by(&:product_id).each do |cart_product_group|
+- unless current_cart.cart_items.nil? || current_cart.cart_items.empty?
+  - current_cart.cart_items.group_by(&:product_id).each do |cart_product_group|
     - cart_product = cart_product_group[1].first
     - product = cart_product.product
     %tr{:id => product.sku}

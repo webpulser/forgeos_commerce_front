@@ -26,7 +26,6 @@ class OrderController < ApplicationController
     end
     env = setting.payment_method_list[params[:payment_type].to_sym][:test] == 1 ? :development : :production
     @order = Order.from_cart(current_cart)
-    #TODO check for config options
     if params[:validchk]
       @order.payment_type = t(params[:payment_type], :scope => 'payment')
       if @order.valid_for_payment?
@@ -153,7 +152,9 @@ class OrderController < ApplicationController
         secret = setting.payment_method_list[:paypal][env][:secret]
         email = setting.payment_method_list[:paypal][env][:email]
         if params[:payment_status] == "Completed" && params[:secret] == secret && params[:receiver_email] == email && params[:mc_gross].to_f == @order.total.to_f
-          Cart.destroy(@order.reference)
+          if cart = Cart.find_by_id(@order.reference)
+            cart.destroy
+          end
           @order.pay!
         end
       end

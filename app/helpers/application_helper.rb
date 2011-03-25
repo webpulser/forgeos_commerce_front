@@ -9,31 +9,39 @@ module ApplicationHelper
   end
 
   def password_fields(form, options={})
-    password_field = options[:password_field] || :password
-    label_class = options[:label_class] || ''
-    input_class = options[:input_class] || ''
-    field_class = options[:field_class] || 'grid_5'
-    password_confirmation_field = options[:password_confirmation_field] || :password_confirmation
+    base_options = {
+      :password_field => :password,
+      :confirmation_field => :password_confirmation,
+      :password_label => t(:password),
+      :confirmation_label => t(:password_confirmation).capitalize,
+      :label_class => '',
+      :input_class => '',
+      :field_class => 'grid_5',
+    }
+    opts = base_options.merge(options)
+    password_field = opts[:password_field]
+    confirmation_field = opts[:confirmation_field]
+
     fields =  ''
-    fields += "<div class='#{field_class} password_field'>"
-    fields += "<div class='#{label_class} password_field'>"
-    fields += form.label(password_field, t(:password).capitalize)
+    fields += "<div class='#{opts[:field_class]} password_field'>"
+    fields += "<div class='#{opts[:label_class]} password_field'>"
+    fields += form.label(password_field, opts[:password_label])
     fields += '</div>'
-    fields += "<div class='#{input_class} password_field'>"
+    fields += "<div class='#{opts[:input_class]} password_field'>"
     fields += form.password_field(password_field)
     fields += '</div>'
     fields += '</div>'
-    fields += "<div class='#{field_class} password_field'>"
-    fields += "<div class='#{label_class} password_field'>"
-    fields += form.label(password_confirmation_field, t(:password_confirmation).capitalize)
+    fields += "<div class='#{opts[:field_class]} password_field'>"
+    fields += "<div class='#{opts[:label_class]} password_field'>"
+    fields += form.label(confirmation_field, opts[:confirmation_label])
     fields += "</div>"
-    fields += "<div class='#{input_class} password_field'>"
-    fields += form.password_field(password_confirmation_field)
+    fields += "<div class='#{opts[:input_class]} password_field'>"
+    fields += form.password_field(confirmation_field)
     fields += "</div>"
     fields += "</div>"
     fields += "<script type=\"text/javascript\">
     $('#user_password').bind('keyup', function(){
-      if ($(this).val().length > 6){
+      if ($(this).val().length > 5){
         $(this).addClass('right_password');
         $(this).removeClass('wrong_password');
       } else{

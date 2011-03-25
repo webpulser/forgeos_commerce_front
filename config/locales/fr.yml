@@ -44,6 +44,7 @@ fr:
     i_want: Je souhaite recevoir la newsletter
     create:
       success: Vous êtes maintenant inscrit à la newsletter.
+      invalid_email: L'email %{error}
     subscription: Inscription à la Newsletter
   authlogic:
     error_messages:
@@ -65,6 +66,8 @@ fr:
       subject: Réinitialisation de votre mot de passe
     newsletter:
       subject: Inscription à la newsletter
+    new_account:
+      subject: Bienvenue sur notre site
   company: entreprise
   administrator_warning: Attention vous êtes en administrateur.
   not_authorized: Vous n'êtes pas autorisé à acceder à cette ressource.

@@ -1,5 +1,5 @@
 .myaccount
-  - form_for(@user, :url => user_path, :html => { :multipart => true }) do |f|
+  - form_for(@user, :url => user_path, :html => { :multipart => true, :autocomplete => false }) do |f|
     .profile
       %h2
         = t(:profile, :scope => [:user, :part]).capitalize
