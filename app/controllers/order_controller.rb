@@ -20,6 +20,10 @@ class OrderController < ApplicationController
     special_offer
     voucher
     setting = Setting.first
+    if params[:payment_type].nil?
+      flash[:error] = "Vous devez choisir un moyen de paiement"
+      return redirect_to :action => 'new'
+    end
     unless setting.payment_method_list[params[:payment_type].to_sym] && setting.payment_method_list[params[:payment_type].to_sym][:active] == 1
       flash[:error] = "Ce moyen de paiement n'est pas disponible"
       return redirect_to :action => 'new'
