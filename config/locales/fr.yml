@@ -68,6 +68,9 @@ fr:
       subject: Inscription à la newsletter
     new_account:
       subject: Bienvenue sur notre site
+    order_confirmation:
+      subject: Votre commande n°%{id}
+      order: votre commande
   company: entreprise
   administrator_warning: Attention vous êtes en administrateur.
   not_authorized: Vous n'êtes pas autorisé à acceder à cette ressource.
