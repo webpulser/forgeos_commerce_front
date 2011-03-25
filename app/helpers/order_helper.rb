@@ -1,5 +1,41 @@
 module OrderHelper
   
+  def payment_methods_list
+    available_payments = []
+    setting = Setting.first 
+    payment_infos = setting.payment_method_list
+    payment_infos.each do |key, values|
+      if values[:active] == 1
+        available_payments << key
+      end
+    end
+    content = ""
+    available_payments.each do |payment_method|
+      payment_tag = content_tag(:div, :class => 'paiement' ) do
+        radio_button_tag( :payment_type, payment_method, true) +
+        content_tag(:label, t(payment_method, :scope => [:payment], :count => 1).capitalize )
+      end
+      if payment_infos[payment_method.to_sym][:image].present?
+        payment_tag  += image_tag(payment_infos[payment_method.to_sym][:image])
+      end
+      content += payment_tag
+    end
+    return content    
+  end
+  
+  def display_cheque_message
+    if payment_infos = YAML.load(Setting.first.payment_methods)
+      if payment_infos[:cheque] && payment_infos[:cheque][:active] == 1
+        content = Setting.first.cheque_message(@order)
+      else
+        content = t(:not_active, :scope => [:payment]).capitalize
+      end
+    else
+      content = t(:not_active, :scope => [:payment]).capitalize
+    end
+    return content
+  end
+  
   def step_order(index=0)
     ## urls need change
     urls = [{:controller => 'cart'}, {:controller => 'order', :action => 'informations'}, {:controller => 'order', :action => 'informations'}, {:controller => 'order', :action => 'informations'}]

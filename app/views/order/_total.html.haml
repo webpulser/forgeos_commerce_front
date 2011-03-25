@@ -42,14 +42,12 @@
     - #TODO Use trnaslations and config
     - form_tag url_for(:controller => 'order', :action => 'create'), :method => :post do
       %h4 Choisissez votre mode de paiement
-      .paiement
-        = radio_button_tag :payment_type, 'cyberplus', true
-        %label Par carte bancaire
-        %img{:src=>"/images/front/paiement/paiement-cb.png"}
-      .paiementpayp
-        = radio_button_tag :payment_type, 'paypal'
-        %label Par Paypal
-        %img{:src=>"/images/front/paiement/paiement-payp.png"}
+      - Setting.first.payment_methods_list.each do |payment_method|
+        .paiement
+          = radio_button_tag :payment_type, payment_method, true
+          %label
+            = t(payment_method, :scope => [:payment]).capitalize
+          %img{:src=>"/images/front/paiement/paiement-cb.png"}
       .conditionpay
         = check_box_tag("validchk")
         %label J'accepte les conditions générales de vente

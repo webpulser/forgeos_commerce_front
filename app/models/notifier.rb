@@ -72,6 +72,19 @@ class Notifier < ActionMailer::Base
       a.body = kit.to_pdf
     end
   end
+  
+  def waiting_for_cheque_notification(order)
+    setting = Setting.first
+    application = setting.name
+    content_type "text/html"
+    recipients order.user.email
+    from setting.email
+    subject "[#{application}] #{I18n.t(:subject, :scope => [:emails, :waiting_for_cheque_notification])}"
+    sent_on Time.now
+    body[:order] = order
+  end
+  
+  
 
   private
   def price_with_currency(price)

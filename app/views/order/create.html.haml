@@ -1,23 +1,9 @@
 .grid_16
   - case @order.payment_type
   - when t("cmc_cic", :scope => 'payment')
-    %form{ :action => @oTpe.sUrlPaiement, :method => "post",  :id => "payment_form"}
-      - current_url = "/" + request.path_parameters['controller'] + "/" + request.path_parameters['action']
-      = hidden_field_tag "version", @oTpe.sVersion
-      = hidden_field_tag "TPE",  @oTpe.sNumero
-      = hidden_field_tag "date", @sDate
-      = hidden_field_tag "montant", "#{@sMontant}#{@sDevise}"
-      = hidden_field_tag "reference",  @sReference
-      = hidden_field_tag "MAC", @oMac.computeHMACSHA1(@sChaineMAC)
-      = hidden_field_tag "url_retour", "#{request.protocol}#{request.host}#{current_url}"
-      = hidden_field_tag "url_retour_ok", @sUrlOk
-      = hidden_field_tag "url_retour_err", @sUrlKo
-      = hidden_field_tag "lgue", @sLangue
-      = hidden_field_tag "societe", @oTpe.sCodeSociete
-      = hidden_field_tag "texte-libre", @sTexteLibre
-      = hidden_field_tag "debug", @sChaineDebug
-      = hidden_field_tag "mail", @sEmail
-      = hidden_field_tag "bouton", @oTpe.sNumero
+    %form{ :action => @payment.delete(:url_payment), :method => "post",  :id => "payment_form"}
+      - @payment.each do |key,value|
+        = hidden_field_tag key, value unless key == :key
     .payment_message
       %p Vous aller être redirigé vers l'interface de paiement de la banque dans quelques instants
       %img{:src => '/images/front/ajax-loader-2.gif'}
@@ -32,7 +18,7 @@
       %img{:src => '/images/front/ajax-loader-2.gif'}
       
   - when t("paypal", :scope => 'payment')
-    - form_tag APP_CONFIG[:paypal_url], :id => 'payment_form' do
+    %form{ :action => @url_paypal, :id => 'payment_form'}
       = hidden_field_tag :cmd, "_s-xclick"
       = hidden_field_tag :encrypted, @order.paypal_encrypted
 

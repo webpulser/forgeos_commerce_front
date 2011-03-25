@@ -59,6 +59,8 @@ fr:
       not_approved: Your account is not approved
 
   emails:
+    waiting_for_cheque_notification:
+      subject: Commande en attente de chèque
     reset_password:
       subject: Réinitialisation de votre mot de passe
     newsletter:
