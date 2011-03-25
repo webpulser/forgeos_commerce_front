@@ -64,7 +64,7 @@ class Notifier < ActionMailer::Base
     }
 
    attachment "application/pdf" do |a|
-      a.filename = "#{I18n.t(:order, :scope => [:emails, :order_confirmation])}_#{application.parameterize('_')}_#{order.reference}.pdf"
+      a.filename = "#{application.parameterize('_')}_#{I18n.t(:order, :scope => [:emails, :order_confirmation])}_#{order.reference}.pdf"
       html = render(:file => '/orders/show.pdf.haml', :body => current_body, :layout => 'order_pdf')
 
       kit = PDFKit.new(html, :title => "#{I18n.t(:order, :scope => [:emails, :order_confirmation]).capitalize} #{order.reference}" )
