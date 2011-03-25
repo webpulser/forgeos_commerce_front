@@ -31,19 +31,18 @@ class OrderController < ApplicationController
     env = setting.payment_method_list[params[:payment_type].to_sym][:test] == 1 ? :development : :production
     @order = Order.from_cart(current_cart)
     if params[:validchk]
-      @order.payment_type = t(params[:payment_type], :scope => 'payment')
+      @order.payment_type = t(params[:payment_type], :scope => 'payment', :count => 1)
       if @order.valid_for_payment?
         @order.save
         case @order.payment_type
-          when t("cmc_cic", :scope => 'payment') ## carte bancaire
-            ##CMCIC form
+          when t("cmc_cic", :scope => 'payment', :count => 1)
             @payment = @order.cmc_cic_encrypted
-          when t("cyberplus", :scope => 'payment')
+          when t("cyberplus", :scope => 'payment', :count => 1)
             @payment = @order.cyberplus_encrypted
-          when t("cheque", :scope => 'payment')
+          when t("cheque", :scope => 'payment', :count => 1)
             @order.wait_for_cheque!
             render :action => 'cheque_payment'
-          when t("paypal", :scope => 'payment')
+          when t("paypal", :scope => 'payment', :count => 1)
             @url_paypal = setting.payment_method_list[:paypal][env][:url]
         end
       end
