@@ -40,7 +40,7 @@ class Notifier < ActionMailer::Base
     content_type "multipart/alternative"
     recipients user.email
     from Setting.first.email
-    subject "[#{application}] #{I18n.t(:subject, :scope => [:emails, :order_confirmation])}"
+    subject "[#{application}] #{I18n.t(:subject, :scope => [:emails, :order_confirmation], :id => order.reference)}"
     sent_on Time.now
 
     part :content_type => 'text/html', :body => render_message(
