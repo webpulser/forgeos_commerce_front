@@ -41,6 +41,7 @@ class OrderController < ApplicationController
             @payment = @order.cyberplus_encrypted
           when t("cheque", :scope => 'payment', :count => 1)
             @order.wait_for_cheque!
+            Cart.destroy(@order.reference)
             render :action => 'cheque_payment'
           when t("paypal", :scope => 'payment', :count => 1)
             @url_paypal = setting.payment_method_list[:paypal][env][:url]
