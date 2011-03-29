@@ -2,9 +2,9 @@ class Address < ActiveRecord::Base
       
   def initialize(*params)
     super(*params)
-    if @new_record && params == [{}]
-      self.form_attributes = {}
-    end
+    #if @new_record && params == [{}]
+    self.form_attributes = {} if self.form_attributes.nil?
+    #end
   end
   
   def form
