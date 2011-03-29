@@ -40,7 +40,7 @@ class Notifier < ActionMailer::Base
     content_type "multipart/alternative"
     recipients user.email
     from Setting.first.email
-    subject "[#{application}] #{I18n.t(:subject, :scope => [:emails, :order_confirmation])}"
+    subject "[#{application}] #{I18n.t(:subject, :scope => [:emails, :order_confirmation], :id => order.reference)}"
     sent_on Time.now
 
     part :content_type => 'text/html', :body => render_message(
@@ -64,7 +64,7 @@ class Notifier < ActionMailer::Base
     }
 
    attachment "application/pdf" do |a|
-      a.filename = "#{I18n.t(:order, :scope => [:emails, :order_confirmation])}_#{application.parameterize('_')}_#{order.reference}.pdf"
+      a.filename = "#{application.parameterize('_')}_#{I18n.t(:order, :scope => [:emails, :order_confirmation])}_#{order.reference}.pdf"
       html = render(:file => '/orders/show.pdf.haml', :body => current_body, :layout => 'order_pdf')
 
       kit = PDFKit.new(html, :title => "#{I18n.t(:order, :scope => [:emails, :order_confirmation]).capitalize} #{order.reference}" )
