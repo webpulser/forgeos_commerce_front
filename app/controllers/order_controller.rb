@@ -155,7 +155,7 @@ class OrderController < ApplicationController
         env = setting.payment_method_list[:paypal][:test] == 1 ? :development : :production
         secret = setting.payment_method_list[:paypal][env][:secret]
         email = setting.payment_method_list[:paypal][env][:email]
-        if params[:payment_status] == "Completed" && params[:secret] == secret && params[:receiver_email] == email && params[:mc_gross].to_f == @order.total.to_f
+        if params[:payment_status] == "Completed" && params[:secret] == secret && params[:receiver_email] == email && params[:mc_gross].to_f.to_s == @order.total.to_f.to_s
           if cart = Cart.find_by_id(@order.reference)
             cart.destroy
           end
