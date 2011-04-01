@@ -1,6 +1,5 @@
 - unless @order.order_details.nil? || @order.order_details.empty?
-  - @order.order_details.group_by(&:product_id).each do |order_detail_group|
-    - order_detail = order_detail_group[1].first
+  - @order.order_details.each do |order_detail|
     - product = order_detail.product
     %tr{:id => product.sku}
       %td.article
@@ -13,12 +12,10 @@
             Réf.
             = product.sku
       %td.quantity.center
-        = link_to_function '-', remote_function(:url => {:controller => 'cart', :action => 'update_quantity', :id => order_detail.id, :quantity => order_detail.quantity-1}), :class=> 'less_product'
-        = text_field_tag 'quantity', order_detail.quantity, :onchange => remote_function( :url =>  {:controller => 'cart', :action => 'update_quantity', :id => order_detail.id }, :with => "'quantity='+$(this).val()"), :class => 'quantity'
-        = link_to_function '+', remote_function({:url => {:controller => 'cart', :action => 'update_quantity', :id => order_detail.id, :quantity => order_detail.quantity+1}}), :class=> 'more_product'
+        = text_field_tag 'quantity', order_detail.quantity, :class => 'quantity'
       %td.price.center
         = price_with_currency(product.old_price)
       %td.reduction.center
-        = price_with_currency(product.discount)
+        = price_with_currency(order_detail.discount(:voucher_discount => false)*order_detail.quantity)
       %td.total_price.center
         = price_with_currency(order_detail.total)

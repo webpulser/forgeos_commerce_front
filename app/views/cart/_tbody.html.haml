@@ -1,6 +1,5 @@
 - unless current_cart.cart_items.nil? || current_cart.cart_items.empty?
-  - current_cart.cart_items.group_by(&:product_id).each do |cart_product_group|
-    - cart_product = cart_product_group[1].first
+  - current_cart.cart_items.each do |cart_product|
     - product = cart_product.product
     %tr{:id => product.sku}
       %td.delete.center
@@ -21,6 +20,6 @@
       %td.price.center
         = price_with_currency(product.old_price)
       %td.reduction.center
-        = price_with_currency(product.discount)
+        = price_with_currency(product.discount*cart_product.quantity)
       %td.total_price.center
         = price_with_currency(cart_product.total)

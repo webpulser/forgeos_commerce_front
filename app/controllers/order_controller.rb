@@ -193,4 +193,40 @@ private
     end
   end
 
+  def special_offer
+    begin
+      engine :special_offer_engine do |e|
+        rule_builder = SpecialOffer.new(e)
+        rule_builder.cart = current_cart
+        @free_product_ids = []
+        rule_builder.free_product_ids = @free_product_ids
+        rule_builder.rules
+        current_cart.cart_items.each do |cart_product|
+          e.assert cart_product.product
+        end
+        e.assert current_cart
+        e.match
+      end
+    rescue Exception
+    end
+  end
+
+  def voucher
+    begin
+      engine :voucher_engine do |e|
+        rule_builder = Voucher.new(e)
+        rule_builder.cart = current_cart
+        rule_builder.code = @voucher_code || session[:voucher_code]
+        rule_builder.free_product_ids = @free_product_ids
+        rule_builder.rules
+        current_cart.cart_items.each do |cart_product|
+          e.assert cart_product.product
+        end
+        e.assert current_cart
+        e.match
+      end
+    rescue Exception
+    end
+  end
+  
 end
