@@ -47,6 +47,7 @@ class OrderController < ApplicationController
             @url_paypal = setting.payment_method_list[:paypal][env][:url]
           when t("elysnet", :scope => 'payment', :count => 1)
             @payment = @order.elysnet_encrypted
+            logger.warn @payment
         end
       end
     else
@@ -239,6 +240,7 @@ private
       if address_delivery.update_attributes(params[:order][:address_delivery_attributes]) && address_invoice.update_attributes(params[:order][:address_invoice_attributes])
         current_cart.options[:address_invoice_id] = address_invoice.id
         current_cart.options[:address_delivery_id] = address_delivery.id
+        current_cart.save
       else
         @order = Order.new(params[:order])
         flash[:error] = "Il y a une erreur dans l'adresse de facturation ou de livraison"

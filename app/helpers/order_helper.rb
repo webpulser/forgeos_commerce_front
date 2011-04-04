@@ -12,7 +12,7 @@ module OrderHelper
     content = ""
     available_payments.each do |payment_method|
       payment_tag = content_tag(:div, :class => 'paiement' ) do
-        radio_button_tag( :payment_type, payment_method, true) +
+        radio_button_tag( :payment_type, payment_method, params[:payment_type] == payment_method.to_s) +
         content_tag(:label, t(payment_method, :scope => [:payment], :count => 1).capitalize )
       end
       if payment_infos[payment_method.to_sym][:image].present?
