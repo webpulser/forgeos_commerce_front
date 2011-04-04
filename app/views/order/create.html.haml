@@ -16,7 +16,14 @@
     .payment_message
       %p Vous aller être redirigé vers l'interface de paiement de la banque dans quelques instants
       %img{:src => '/images/front/ajax-loader-2.gif'}
-      
+
+  - when t("elysnet", :scope => 'payment', :count => 1)
+    = @payment
+
+    .payment_message
+      %p Vous aller être redirigé vers l'interface de paiement de la banque dans quelques instants
+      %img{:src => '/images/front/ajax-loader-2.gif'}
+  
   - when t("paypal", :scope => 'payment', :count => 1)
     %form{ :action => @url_paypal, :id => 'payment_form'}
       = hidden_field_tag :cmd, "_s-xclick"

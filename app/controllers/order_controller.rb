@@ -5,7 +5,7 @@ require 'cgi'
 class OrderController < ApplicationController
   before_filter :must_be_logged, :only => [:new, :deliveries]
   before_filter :validate_and_update_address, :only => [:new]
-  skip_before_filter :verify_authenticity_token, :only => [:call_autoresponse_cyberplus, :paypal_notification, :success, :cancel, :call_autoresponse_cmc_cic]
+  skip_before_filter :verify_authenticity_token, :only => [:call_autoresponse_cyberplus, :paypal_notification, :success, :cancel, :call_autoresponse_cmc_cic, :call_autoresponse_elysnet]
 
   def new
     special_offer
@@ -45,6 +45,8 @@ class OrderController < ApplicationController
             render :action => 'cheque_payment'
           when t("paypal", :scope => 'payment', :count => 1)
             @url_paypal = setting.payment_method_list[:paypal][env][:url]
+          when t("elysnet", :scope => 'payment', :count => 1)
+            @payment = @order.elysnet_encrypted
         end
       end
     else
@@ -166,6 +168,60 @@ class OrderController < ApplicationController
     render :nothing => true
   end
 
+  def call_autoresponse_elysnet
+    message = params['DATA']
+    @result = `./lib/elysnet/bin/response pathfile=./lib/elysnet/param/pathfile message=#{message}` #execution of response script
+    
+    @response = @result.split("!")
+    
+    @code = @response[1]
+    @error = @response[2]
+    @merchant_id = @response[3]
+    @merchant_country = @response[4]
+    @amount = @response[5]
+    @transaction_id = @response[6]
+    @payment_means = @response[7]
+    @transmission_date = @response[8]
+    @payment_time = @response[9]
+    @payment_date = @response[10]
+    @response_code = @response[11]
+    @payment_certificate = @response[12]
+    @authorisation_id = @response[13]
+    @currency_code = @response[14]
+    @card_number = @response[15]
+    @cvv_flag = @response[16]
+    @cvv_response_code = @response[17]
+    @bank_response_code = @response[18]
+    @complementary_code = @response[19]
+    @complementary_info= @response[20]
+    @return_context = @response[21]
+    @caddie = @response[22]
+    @receipt_complement = @response[23]
+    @merchant_language = @response[24]
+    @language = @response[25]
+    @customer_id = @response[26]
+    @order_id = @response[27]
+    @customer_email = @response[28]
+    @customer_ip_address = @response[29]
+    @capture_day = @response[30]
+    @capture_mode = @response[31]
+    @data = @response[32]
+    
+    if @response_code == "00"
+      @order = Order.find(@order_id)
+      if @order.pay!
+        @order.update_attributes!(:transaction_number => @transaction_id)
+        if cart = Cart.find_by_id(@order.reference)
+          cart.destroy
+        end
+        render :text => true
+      else
+        render :text => false, :status => 500
+      end
+    else
+      render :text => false, :status => 500
+    end
+  end
   
 private
   def must_be_logged
