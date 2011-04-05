@@ -47,7 +47,6 @@ class OrderController < ApplicationController
             @url_paypal = setting.payment_method_list[:paypal][env][:url]
           when t("elysnet", :scope => 'payment', :count => 1)
             @payment = @order.elysnet_encrypted
-            logger.warn @payment
         end
       end
     else
