@@ -226,7 +226,7 @@ class OrderController < ApplicationController
 private
   def must_be_logged
     unless current_user
-      session[:return_to] = {:controller => 'order', :action => 'new'}
+      session[:return_to] = {:controller => 'order', :action => 'new', :quick => '1'}
       return redirect_to(:login)
     end
   end

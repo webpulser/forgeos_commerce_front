@@ -4,4 +4,7 @@
     = render :partial => '/person_sessions/form'
   .prefix_2.grid_7
     %h2= t('create', :scope => [:user, :action])
-    = render :partial => '/users/form_create', :locals => {:btn => 'create'}
+    - if Forgeos::CONFIG[:account]['checkout_quick_create'] and params[:quick]
+      = render :partial => '/users/form_quick_create', :locals => {:btn => 'create'}
+    - else
+      = render :partial => '/users/form_create', :locals => {:btn => 'create'}

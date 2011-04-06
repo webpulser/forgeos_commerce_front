@@ -1,0 +1,16 @@
+- content_for(:title, t('action', :scope => [:user, :create]))
+- form_for @user, :html => { :autocomplete => 'on'}, :url => user_path do |f|
+  = hidden_field_tag :quick, 1
+  .person-session-form
+    - [:email, :email_confirmation].each do |key|
+      .grid_2
+        = f.label key, "#{t(key)} <span class='required'>*<span>"
+      .grid_4
+        = f.text_field key
+      .clear
+    = password_fields(f, :label_class => 'grid_2', :input_class => 'grid_4', :field_class=> nil, :password_label => "#{t(:password)} <span class='required'>*<span>", :confirmation_label => "#{t(:password_confirmation)} <span class='required'>*<span>")
+    .grid_4.prefix_2
+      = f.submit t('action', :scope => [:user, :create])
+    .clear
+%p.mandatory-field
+  * #{t(:mandatory_field, :count => 2)}
