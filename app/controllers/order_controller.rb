@@ -17,7 +17,7 @@ class OrderController < ApplicationController
     @order = Order.from_cart(current_cart)
 
     if @order.valid_for_payment?
-      if colissimo[:active] == 1 && @order.address_delivery.country.printable_name == 'FRANCE'
+      if colissimo[:active] == 1 && @order.address_delivery.country.name == 'FRANCE'
         return redirect_to :action => 'so_colissimo'
       else
         current_cart.options[:colissimo] = nil
