@@ -56,6 +56,7 @@ class CartController < ApplicationController
   def delete_product
     cart_product = current_cart.cart_items.find_by_id(params[:id])
     current_cart.cart_items.find_all_by_product_id(cart_product.product_id).collect(&:delete) unless cart_product.nil?
+    current_cart.reload
     special_offer
     voucher
     if request.xhr?

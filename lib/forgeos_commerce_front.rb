@@ -1,3 +1,1 @@
-module Forgeos::Config
-  CONFIG = {}
-end
+require 'forgeos/config'

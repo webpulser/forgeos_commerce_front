@@ -28,17 +28,23 @@ class UsersController < ApplicationController
   def create
     cookies.delete :auth_token
     @user = User.new(params[:user])
-    password = nil
-    if Forgeos::CONFIG[:account]['password_generated']
+    password = params[:user][:password]
+    if not Forgeos::CONFIG[:account]['checkout_quick_create'] and not password and Forgeos::CONFIG[:account]['password_generated']
       password = generate_password(10)
       @user.password = password
       @user.password_confirmation = password
     end
     if @user.save
-      Notifier.deliver_validation_user_account(@user, password)
+      unless Forgeos::CONFIG[:account]['checkout_quick_create']
+        Notifier.deliver_validation_user_account(@user, password)
+      else
+        @user.activate
+        PersonSession.create(@user,true)
+      end
       flash[:notice] = I18n.t('success', :scope => [:user, :create])
-      redirect_to(login_path)
+      redirect_to_stored_location(login_path)
     else
+      Rails.logger.info("\033[01;33m#{@user.errors.inspect}\033[0m")
       if @user.errors.on(:civility)
         flash[:error] = 'Veuillez préciser votre civilité'
       else

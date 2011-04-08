@@ -113,11 +113,11 @@ class OrderController < ApplicationController
       render :action => 'new'
     end
   end
-  
-  
+
+
   def cheque_payment
   end
-  
+
   def call_autoresponse_cmc_cic
     setting = Setting.first
     if setting.payment_method_list[:cmc_cic] && setting.payment_method_list[:cmc_cic][:active]
@@ -196,7 +196,7 @@ class OrderController < ApplicationController
     flash[:success] = 'Le paiement a été validé'
     redirect_to '/commande-validee'
   end
-  
+
   def deliveries
     params[:order] ||= {}
     params[:order][:address_invoice_attributes] ||= current_user.address_invoice.attributes.merge(:id => nil) if current_user.address_invoice
@@ -205,7 +205,7 @@ class OrderController < ApplicationController
     params[:order][:address_delivery_attributes] ||= current_cart.address_delivery.attributes if current_cart.address_delivery
     @order = Order.new(params[:order])
   end
-  
+
   def paypal_notification
     @order = Order.find_by_id(params[:invoice])
     unless @order.nil?
@@ -228,9 +228,9 @@ class OrderController < ApplicationController
   def call_autoresponse_elysnet
     message = params['DATA']
     @result = `./lib/elysnet/bin/response pathfile=./lib/elysnet/param/pathfile message=#{message}` #execution of response script
-    
+
     @response = @result.split("!")
-    
+
     @code = @response[1]
     @error = @response[2]
     @merchant_id = @response[3]
@@ -263,7 +263,7 @@ class OrderController < ApplicationController
     @capture_day = @response[30]
     @capture_mode = @response[31]
     @data = @response[32]
-    
+
     if @response_code == "00"
       @order = Order.find(@order_id)
       if @order.pay!
@@ -279,20 +279,20 @@ class OrderController < ApplicationController
       render :text => false, :status => 500
     end
   end
-  
+
 private
   def must_be_logged
     unless current_user
       session[:return_to] = {:controller => 'order', :action => 'new'}
-      return redirect_to(:login)
+      return redirect_to(login_path(:quick => '1'))
     end
   end
-  
+
   def validate_and_update_address
     if params[:order] and params[:order][:address_invoice_attributes] and params[:order][:address_delivery_attributes]
       address_invoice = current_user.address_invoices.find_or_create_by_id(params[:order][:address_invoice_attributes])
       address_delivery = current_user.address_deliveries.find_or_create_by_id(params[:order][:address_delivery_attributes])
-            
+
       if address_delivery.update_attributes(params[:order][:address_delivery_attributes]) && address_invoice.update_attributes(params[:order][:address_invoice_attributes])
         current_cart.options[:address_invoice_id] = address_invoice.id
         current_cart.options[:address_delivery_id] = address_delivery.id
@@ -300,7 +300,7 @@ private
       else
         @order = Order.new(params[:order])
         flash[:error] = "Il y a une erreur dans l'adresse de facturation ou de livraison"
-        render :action => "deliveries"        
+        render :action => "deliveries"
       end
     else
       redirect_to :action => 'deliveries'
@@ -342,5 +342,5 @@ private
     rescue Exception
     end
   end
-  
+
 end
