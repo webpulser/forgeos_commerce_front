@@ -10,35 +10,22 @@ class OrderController < ApplicationController
   def new
     setting = Setting.first
     colissimo = setting.colissimo_method_list
-    p colissimo
     special_offer
     voucher
     @order = Order.from_cart(current_cart)
 
-    #If so colissimo enabled && params[SIGNATURE]
-    if colissimo && colissimo[:active] == 1 && !params[:SIGNATURE].nil?
-      update_order_with_colissimo
-      unless @order.valid_for_payment?
-        return render :action => 'new'
+    if @order.valid_for_payment?
+      if colissimo[:active] == 1
+        return redirect_to :action => 'so_colissimo'
       end
-    else
-      p 'la'
-      if @order.valid_for_payment?
-        p 'here'
-        p colissimo[:active]
-        if colissimo[:active] == 1
-          return redirect_to :action => 'so_colissimo'
-        end
-        return render :action => 'new'
-      end
+      render :action => 'new'
     end
   end
 
   def so_colissimo
     setting = Setting.first
     colissimo = setting.colissimo_method_list
-    p colissimo
-    p colissimo[:ulrko]
+    
     if colissimo && colissimo[:active] == 1
       if @order = Order.from_cart(current_cart)
         @_url = "#{colissimo[:url_prod]}?trReturnUrlKo=#{colissimo[:urlko]}"
@@ -52,8 +39,8 @@ class OrderController < ApplicationController
 
   def update_order_with_colissimo
     setting = Setting.first
-
-    s_chaine_mac = [params[:PUDOFOID], params[:CENAME], params[:DYPREPARATIONTIME], params[:DYFORWARDINGCHARGES], params[:TRCLIENTNUMBER], params[:TRORDERNUMBER], params[:ORDERID], setting[:sha] ].join('')
+    colissimo = setting.colissimo_method_list
+    s_chaine_mac = [params[:PUDOFOID], params[:CENAME], params[:DYPREPARATIONTIME], params[:DYFORWARDINGCHARGES], params[:TRCLIENTNUMBER], params[:TRORDERNUMBER], params[:ORDERID], colissimo[:sha] ].join('')
 
     #pudoFOId + ceName + dyPreparationTime + dyForwardingCharges + trClientNumber+ trOrderNumber+ orderId+cléSHA
 
@@ -61,15 +48,20 @@ class OrderController < ApplicationController
       if @order && @order.reference.to_i == params[:ORDERID].split('m').last.to_i
         current_cart.update_attributes( :options => params.to_json )
         @order.update_attributes_from_colissimo(params)
+        if @order.valid_for_payment?
+          return render :action => 'new'
+        else
+          return render :action => 'deliveries'
+        end
       else
         @params = { :order => @order, :order_ref => @order.reference }
         flash[:error] = "La commande n° #{params[:ORDERID].split('m').last.to_i} est introuvable, identifiant de votre panier est #{@order.reference}"
-        render :action => 'new'
+        return render :action => 'deliveries'
       end
     else
       flash[:error] = 'Une erreur est survenue lors la vérification des données'
       @params = { :order => @order, :order_ref => @order.reference }
-      render :action => 'new'
+      render :action => 'deliveries'
     end
   end
 
@@ -77,16 +69,25 @@ class OrderController < ApplicationController
     special_offer
     voucher
     setting = Setting.first
+    colissimo = setting.colissimo_method_list
+
+    @order = Order.from_cart(current_cart)
+    #If so colissimo enabled && params[SIGNATURE]
+    if colissimo && colissimo[:active] == 1 && !params[:SIGNATURE].nil?
+      update_order_with_colissimo
+      return true
+    end
+
     unless params[:payment_type]
       flash[:error] = "Vous devez choisir un moyen de paiement"
       return render :action => 'new'
     end
+    
     unless setting.payment_method_list[params[:payment_type].to_sym] && setting.payment_method_list[params[:payment_type].to_sym][:active] == 1
       flash[:error] = "Ce moyen de paiement n'est pas disponible"
       return render :action => 'new'
     end
     env = setting.payment_method_list[params[:payment_type].to_sym][:test] == 1 ? :development : :production
-    @order = Order.from_cart(current_cart)
 
     if params[:validchk]
       @order.payment_type = t(params[:payment_type], :scope => 'payment', :count => 1)
