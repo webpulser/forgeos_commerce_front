@@ -2,10 +2,12 @@ require 'sha1'
 require 'CMCIC_Config'
 require 'CMCIC_Tpe'
 require 'cgi'
+require 'ruleby'
 class OrderController < ApplicationController
   before_filter :must_be_logged, :only => [:new, :deliveries]
   before_filter :validate_and_update_address, :only => [:new]
-  skip_before_filter :verify_authenticity_token, :only => [:call_autoresponse_cyberplus, :paypal_notification, :success, :cancel, :call_autoresponse_cmc_cic, :call_autoresponse_elysnet, :create]
+  skip_before_filter :verify_authenticity_token, :only => [:call_autoresponse_cyberplus, :paypal_notification, :success, :cancel, :call_autoresponse_cmc_cic, :call_autoresponse_elysnet, :create, :debug_colissimo]
+  include Ruleby
 
   def new
     setting = Setting.first
@@ -15,10 +17,13 @@ class OrderController < ApplicationController
     @order = Order.from_cart(current_cart)
 
     if @order.valid_for_payment?
-      if colissimo[:active] == 1
+      if colissimo[:active] == 1 && @order.address_delivery.country.printable_name == 'FRANCE'
         return redirect_to :action => 'so_colissimo'
+      else
+        current_cart.options[:colissimo] = nil
+        current_cart.save
+        render :action => 'new'
       end
-      render :action => 'new'
     end
   end
 
@@ -45,8 +50,8 @@ class OrderController < ApplicationController
 
     if Digest::SHA1.hexdigest(s_chaine_mac) == params[:SIGNATURE]
       if @order && @order.reference.to_i == params[:ORDERID].split('m').last.to_i
-        @order.
-        current_cart.update_attributes( :options => { :colissimo => params })
+        current_cart.options[:colissimo] = params
+        current_cart.save
         @order.update_attributes_from_colissimo(params)
         if @order.valid_for_payment?
           return render :action => 'new'
@@ -298,9 +303,8 @@ private
         current_cart.options[:address_invoice_id] = address_invoice.id
         current_cart.options[:address_delivery_id] = address_delivery.id
         transporter_rule
-        if @transporter_ids.size == 1
-          current_cart.options[:transporter_rule_id] = @transporter_ids
-        end
+        current_cart.options[:transporter_rule_id] = @transporter_ids
+        
         current_cart.save
       else
         @order = Order.new(params[:order])
@@ -348,14 +352,13 @@ private
     end
   end
 
-
   def transporter_rule
     @transporter_ids = []
     begin
       engine :transporter_engine do |e|
-
         rule_builder = Transporter.new(e)
         rule_builder.transporter_ids = @transporter_ids
+        rule_builder.cart = current_cart
         rule_builder.rules
         current_cart.carts_products.each do |cart_product|
           e.assert cart_product.product
@@ -363,8 +366,10 @@ private
         e.assert current_cart
         e.match
       end
-    rescue Exception
+    rescue Exception => e
+      logger.warn e.message
     end
   end
+
 
 end
