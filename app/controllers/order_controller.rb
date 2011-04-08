@@ -46,7 +46,7 @@ class OrderController < ApplicationController
 
     if Digest::SHA1.hexdigest(s_chaine_mac) == params[:SIGNATURE]
       if @order && @order.reference.to_i == params[:ORDERID].split('m').last.to_i
-        current_cart.update_attributes( :options => { :colissimo => params.to_json })
+        current_cart.update_attributes( :options => { :colissimo => params })
         @order.update_attributes_from_colissimo(params)
         if @order.valid_for_payment?
           return render :action => 'new'
