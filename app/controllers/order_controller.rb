@@ -5,7 +5,7 @@ require 'cgi'
 class OrderController < ApplicationController
   before_filter :must_be_logged, :only => [:new, :deliveries]
   before_filter :validate_and_update_address, :only => [:new]
-  skip_before_filter :verify_authenticity_token, :only => [:call_autoresponse_cyberplus, :paypal_notification, :success, :cancel, :call_autoresponse_cmc_cic, :call_autoresponse_elysnet]
+  skip_before_filter :verify_authenticity_token, :only => [:call_autoresponse_cyberplus, :paypal_notification, :success, :cancel, :call_autoresponse_cmc_cic, :call_autoresponse_elysnet, :create]
 
   def new
     setting = Setting.first
@@ -40,12 +40,12 @@ class OrderController < ApplicationController
   def update_order_with_colissimo
     setting = Setting.first
     colissimo = setting.colissimo_method_list
-    s_chaine_mac = [params[:PUDOFOID], params[:CENAME], params[:DYPREPARATIONTIME], params[:DYFORWARDINGCHARGES], params[:TRCLIENTNUMBER], params[:TRORDERNUMBER], params[:ORDERID], colissimo[:sha] ].join('')
-
     #pudoFOId + ceName + dyPreparationTime + dyForwardingCharges + trClientNumber+ trOrderNumber+ orderId+cléSHA
+    s_chaine_mac = [params[:PUDOFOID], params[:CENAME], params[:DYPREPARATIONTIME], params[:DYFORWARDINGCHARGES], params[:TRCLIENTNUMBER], params[:TRORDERNUMBER], params[:ORDERID], colissimo[:sha] ].join('')
 
     if Digest::SHA1.hexdigest(s_chaine_mac) == params[:SIGNATURE]
       if @order && @order.reference.to_i == params[:ORDERID].split('m').last.to_i
+        @order.
         current_cart.update_attributes( :options => { :colissimo => params })
         @order.update_attributes_from_colissimo(params)
         if @order.valid_for_payment?
@@ -297,6 +297,10 @@ private
       if address_delivery.update_attributes(params[:order][:address_delivery_attributes]) && address_invoice.update_attributes(params[:order][:address_invoice_attributes])
         current_cart.options[:address_invoice_id] = address_invoice.id
         current_cart.options[:address_delivery_id] = address_delivery.id
+        transporter_rule
+        if @transporter_ids.size == 1
+          current_cart.options[:transporter_rule_id] = @transporter_ids
+        end
         current_cart.save
       else
         @order = Order.new(params[:order])
@@ -335,6 +339,25 @@ private
         rule_builder.free_product_ids = @free_product_ids
         rule_builder.rules
         current_cart.cart_items.each do |cart_product|
+          e.assert cart_product.product
+        end
+        e.assert current_cart
+        e.match
+      end
+    rescue Exception
+    end
+  end
+
+
+  def transporter_rule
+    @transporter_ids = []
+    begin
+      engine :transporter_engine do |e|
+
+        rule_builder = Transporter.new(e)
+        rule_builder.transporter_ids = @transporter_ids
+        rule_builder.rules
+        current_cart.carts_products.each do |cart_product|
           e.assert cart_product.product
         end
         e.assert current_cart
