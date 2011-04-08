@@ -1,0 +1,8 @@
+- form_tag(@_url, :autocomplete => 'off', :id => 'payment_form') do
+  - @colissimo.each do |key,value|
+    = hidden_field_tag key, value unless key == :key
+.center
+  %p
+    Merci pour votre confiance, vous allez être redirigé vers l'interface "So Colissimo" dans quelques instant
+  %br
+=# javascript_tag "jQuery('#payment_form').submit();"
