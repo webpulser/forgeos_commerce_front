@@ -17,7 +17,7 @@ class OrderController < ApplicationController
     @order = Order.from_cart(current_cart)
 
     if @order.valid_for_payment?
-      if colissimo[:active] == 1 && @order.address_delivery.country.name == 'FRANCE'
+      if colissimo[:active] == 1 && current_cart.address_delivery.country.name == 'FRANCE'
         return redirect_to :action => 'so_colissimo'
       else
         current_cart.options[:colissimo] = nil
@@ -28,6 +28,9 @@ class OrderController < ApplicationController
   end
 
   def so_colissimo
+    special_offer
+    voucher
+    
     setting = Setting.first
     colissimo = setting.colissimo_method_list
     
@@ -302,9 +305,14 @@ private
       if address_delivery.update_attributes(params[:order][:address_delivery_attributes]) && address_invoice.update_attributes(params[:order][:address_invoice_attributes])
         current_cart.options[:address_invoice_id] = address_invoice.id
         current_cart.options[:address_delivery_id] = address_delivery.id
+        current_cart.save
+
+        special_offer
+        voucher
         transporter_rule
+
         current_cart.options[:transporter_rule_id] = @transporter_ids
-        
+
         current_cart.save
       else
         @order = Order.new(params[:order])
@@ -360,7 +368,7 @@ private
         rule_builder.transporter_ids = @transporter_ids
         rule_builder.cart = current_cart
         rule_builder.rules
-        current_cart.carts_products.each do |cart_product|
+        current_cart.cart_items.each do |cart_product|
           e.assert cart_product.product
         end
         e.assert current_cart
