@@ -316,6 +316,7 @@ private
         current_cart.save
       else
         @order = Order.new(params[:order])
+        @order.valid?
         flash[:error] = "Il y a une erreur dans l'adresse de facturation ou de livraison"
         render :action => "deliveries"
       end
