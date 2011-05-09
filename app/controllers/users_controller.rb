@@ -29,13 +29,14 @@ class UsersController < ApplicationController
     cookies.delete :auth_token
     @user = User.new(params[:user])
     password = params[:user][:password]
-    if not Forgeos::CONFIG[:account]['checkout_quick_create'] and not password and Forgeos::CONFIG[:account]['password_generated']
+    if (not Forgeos::CONFIG[:account]['checkout_quick_create'] or not password) and Forgeos::CONFIG[:account]['password_generated']
       password = generate_password(10)
+      @user.email_confirmation = @user.email if @user.respond_to?('email_confirmation=')
       @user.password = password
       @user.password_confirmation = password
     end
     if @user.save
-      unless Forgeos::CONFIG[:account]['checkout_quick_create'] and not Forgeos::CONFIG[:account]['password_generated']
+      if @generated_password
         Notifier.deliver_validation_user_account(@user, password)
       else
         @user.activate
@@ -130,6 +131,7 @@ class UsersController < ApplicationController
   def generate_password(size)
     s = ""
     size.times { s << (i = Kernel.rand(62); i += ((i < 10) ? 48 : ((i < 36) ? 55 : 61 ))).chr }
+    @generated_password = true
     return s
   end
 
