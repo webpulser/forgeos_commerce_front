@@ -35,7 +35,7 @@ class UsersController < ApplicationController
       @user.password_confirmation = password
     end
     if @user.save
-      unless Forgeos::CONFIG[:account]['checkout_quick_create'] and password
+      unless Forgeos::CONFIG[:account]['checkout_quick_create'] and not Forgeos::CONFIG[:account]['password_generated']
         Notifier.deliver_validation_user_account(@user, password)
       else
         @user.activate
