@@ -1,3 +1,39 @@
+- if setting = Setting.first and setting.google_account.present? and setting.google_affiliation_store_name.present?
+  - content_for :google do
+    - javascript_tag do
+      var _gaq = _gaq || [];
+      = "_gaq.push(['_setAccount', '#{setting.google_account}' ]);"
+      _gaq.push(['_trackPageview']);
+      _gaq.push(['_addTrans',
+      = "'#{@order.reference}',           // order ID - required"
+      = "'#{setting.google_affiliation_store_name}',  // affiliation or store name"
+      = "'#{@order.total}',          // total - required"
+      = "'#{@order.taxes.to_f}',           // tax"
+      = "'#{@order.order_shipping.price.to_f}',              // shipping"
+      = "'#{@order.address_delivery.city}',       // city"
+      = "'#{@order.address_delivery.zip_code}',     // state or province"
+      = "'#{@order.address_delivery.country.iso}'             // country"
+      ]);
+
+    - @order.order_details.each do |item|
+      - javascript_tag do
+        _gaq.push(['_addItem',
+        = "'#{@order.reference}',           // order ID - required"
+        = "'#{item.sku}',           // SKU/code - required"
+        = "'#{item.name}',        // product name"
+        = "'#{item.product.product_type.name}',   // category or variation"
+        = "'#{item.price}',          // unit price - required"
+        = "'#{item.quantity}'               // quantity - required"
+        ]);
+        _gaq.push(['_trackTrans']); //submits transaction to the Analytics servers
+
+        (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+        })();
+
+
 .grid_16
   - case @order.payment_type
   - when t("cmc_cic", :scope => 'payment', :count => 1)
