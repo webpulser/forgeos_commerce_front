@@ -309,10 +309,26 @@ private
 
         special_offer
         voucher
+        #have to check transporter after upodate address_delivery  => 2 saves :/
         transporter_rule
 
         current_cart.options[:transporter_rule_id] = @transporter_ids
-
+        
+        change = false
+        if current_user.lastname.blank?
+          change = true
+          current_user.lastname = address_invoice.name
+        end
+        
+        if current_user.firstname.blank?
+          change = true
+          current_user.firstname = address_invoice.firstname
+        end
+        
+        if change
+          current_user.save
+        end
+        
         current_cart.save
       else
         @order = Order.new(params[:order])
