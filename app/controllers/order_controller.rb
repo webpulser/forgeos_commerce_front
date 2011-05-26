@@ -20,7 +20,8 @@ class OrderController < ApplicationController
       if colissimo[:active] == 1 && current_cart.address_delivery.country.name == 'FRANCE'
         return redirect_to :action => 'so_colissimo'
       else
-        current_cart.options[:colissimo] = nil
+        options = current_cart.options || {}
+        options[:colissimo] = nil
         current_cart.save
         render :action => 'new'
       end
@@ -53,7 +54,8 @@ class OrderController < ApplicationController
 
     if Digest::SHA1.hexdigest(s_chaine_mac) == params[:SIGNATURE]
       if @order && @order.reference.to_i == params[:ORDERID].split('m').last.to_i
-        current_cart.options[:colissimo] = params
+        options = current_cart.options || {}
+        options[:colissimo] = params
         current_cart.save
         @order.update_attributes_from_colissimo(params)
         if @order.valid_for_payment?
@@ -303,8 +305,9 @@ private
       address_delivery = current_user.address_deliveries.find_or_create_by_id(params[:order][:address_delivery_attributes])
 
       if address_delivery.update_attributes(params[:order][:address_delivery_attributes]) && address_invoice.update_attributes(params[:order][:address_invoice_attributes])
-        current_cart.options[:address_invoice_id] = address_invoice.id
-        current_cart.options[:address_delivery_id] = address_delivery.id
+        options = current_cart.options || {}
+        options[:address_invoice_id] = address_invoice.id
+        options[:address_delivery_id] = address_delivery.id
         current_cart.save
 
         special_offer
@@ -312,7 +315,7 @@ private
         #have to check transporter after upodate address_delivery  => 2 saves :/
         transporter_rule
 
-        current_cart.options[:transporter_rule_id] = @transporter_ids
+        options[:transporter_rule_id] = @transporter_ids
         
         change = false
         if current_user.lastname.blank?
