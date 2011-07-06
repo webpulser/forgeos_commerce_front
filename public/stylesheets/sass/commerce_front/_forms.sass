@@ -1,12 +1,11 @@
 textarea, input[type="text"], input[type="password"]
   border: solid 1px #b2b2b2
-  +borderCorner()
-
+  +borderCorner
   &.error_on_this_field
-    border-color: #f00
+    border-color: red
 
 .field_error
-  color: #f00
+  color: red
 
 .account_form
   label,
@@ -14,4 +13,3 @@ textarea, input[type="text"], input[type="password"]
   input[type="text"],
   input[type="password"]
     display: block
-    

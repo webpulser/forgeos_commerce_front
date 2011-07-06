@@ -4,10 +4,10 @@
   height: 40px
   margin-left: auto
   margin-right: auto
-  +borderCorner()
+  +borderCorner
   width: 385px
   .checkout_link
-    +borderCorner()
+    +borderCorner
     display: block
     float: left
     margin-right: 20px
@@ -29,8 +29,7 @@
       span
         a
           color: white
-          
-          
+
 .cart_content
   p
     text-align: none !important
@@ -40,16 +39,16 @@
     thead
       tr
         border:
-          bottom: 1px solid #FF6600
+          bottom: 1px solid #ff6600
         th
           padding: 5px
     tbody
       tr
         background:
-          color: #EEE
+          color: #eeeeee
         margin-bottom: 20px
         border:
-          bottom: 20px solid #FFF
+          bottom: 20px solid white
         td
           &.article
             .product_info
@@ -59,7 +58,7 @@
                 display: block
           vertical-align: middle
           border:
-            right: 1px dotted #CCC
+            right: 1px dotted #cccccc
           padding: 10px
           &.center
             text-align: center
@@ -68,7 +67,7 @@
               right: 0
           .delete_product
             background:
-              image: url('/images/commerce_front/cart/delete.png')
+              image: url("/images/commerce_front/cart/delete.png")
               repeat: no-repeat
               position: center
             height: 30px
@@ -78,11 +77,11 @@
             margin: auto
           .less_product, .more_product
             background:
-              image: url('/images/commerce_front/cart/change_quantity.png')
+              image: url("/images/commerce_front/cart/change_quantity.png")
               repeat: no-repeat
               position: center
             text-align: center
-            color: #FFF
+            color: white
             font-weight: bold
             float: left
             margin: 2px 5px 0
@@ -90,8 +89,8 @@
             height: 17px
             line-height: 17px
           .quantity
-            border: 1px solid #EEE
-            +borderCorner()
+            border: 1px solid #eeeeee
+            +borderCorner
             float: left
             margin: 0
             width: 40px
