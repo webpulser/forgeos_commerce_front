@@ -26,7 +26,8 @@ module OrderHelper
           content_tag(:label, t(pm, :scope => [:payment], :count => 1).capitalize )
         end
         if payment_infos[payment_method.to_sym][:image].present?
-          payment_tag  += image_tag(payment_infos[payment_method.to_sym][:image].sub(/\.(\w*)$/, "_multi.#{$1}"))
+          payment_infos[payment_method.to_sym][:image].sub(/\.\(\w+\)$/, "_multi.#{$1}")
+          payment_tag  += image_tag()
         end
       end
 

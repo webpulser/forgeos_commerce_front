@@ -99,6 +99,8 @@ class OrderController < ApplicationController
     if payment_type == :cyberplus_multi
       payment_type = :cyberplus
       @order.payment_plans = true
+    else
+      @order.payment_plans = false
     end
 
     unless setting.payment_method_list[payment_type] && setting.payment_method_list[payment_type][:active] == 1
