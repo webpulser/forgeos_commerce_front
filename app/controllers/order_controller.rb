@@ -103,12 +103,12 @@ class OrderController < ApplicationController
       @order.payment_plans = false
     end
 
-    unless setting.payment_method_list[payment_type] && setting.payment_method_list[payment_type][:active] == 1
+    unless setting.payment_method_availabe?(payment_type)
       flash[:error] = "Ce moyen de paiement n'est pas disponible"
       return render :action => 'new'
     end
 
-    env = (setting.payment_method_list[payment_type][:test] == 1 ? :development : :production)
+    env = setting.payment_method_env(payment_type)
 
     if params[:validchk]
       @order.payment_type = t(payment_type, :scope => 'payment', :count => 1)
@@ -124,7 +124,7 @@ class OrderController < ApplicationController
             Cart.destroy(@order.reference)
             render :action => 'cheque_payment'
           when t("paypal", :scope => 'payment', :count => 1)
-            @url_paypal = setting.payment_method_list[:paypal][env][:url]
+            @url_paypal = setting.payment_methods[:paypal][env][:url]
           when t("elysnet", :scope => 'payment', :count => 1)
             @payment = @order.elysnet_encrypted
         end
@@ -142,7 +142,7 @@ class OrderController < ApplicationController
 
   def call_autoresponse_cmc_cic
     setting = Setting.first
-    if setting.payment_method_list[:cmc_cic] && setting.payment_method_list[:cmc_cic][:active]
+    if setting.payment_method_availabe?(:cmc_cic)
       oTpe = CMCIC_Tpe.new()
       oHmac = CMCIC_Hmac.new(oTpe)
 
@@ -191,7 +191,7 @@ class OrderController < ApplicationController
 
   def call_autoresponse_cyberplus
     setting = Setting.first
-    if setting.payment_method_list[:cyberplus] && setting.payment_method_list[:cyberplus][:active]
+    if setting.payment_method_availabe?(:cyberplus)
       if @order = Order.find_by_id(params[:order_id])
         Cart.destroy(@order.reference)
         @order.update_attribute(:transaction_number,params[:trans_id])
@@ -232,10 +232,10 @@ class OrderController < ApplicationController
     @order = Order.find_by_id(params[:invoice])
     unless @order.nil?
       setting = Setting.first
-      if setting.payment_method_list[:paypal] && setting.payment_method_list[:paypal][:active]
-        env = setting.payment_method_list[:paypal][:test] == 1 ? :development : :production
-        secret = setting.payment_method_list[:paypal][env][:secret]
-        email = setting.payment_method_list[:paypal][env][:email]
+      if setting.payment_method_availabe?(:paypal)
+        env = setting.payment_method_env(:paypal)
+        secret = setting.payment_method_settings(:paypal)[:secret]
+        email = setting.payment_method_settings(:paypal)[:email]
         if params[:payment_status] == "Completed" && params[:secret] == secret && params[:receiver_email] == email && params[:mc_gross].to_f.to_s == @order.total.to_f.to_s
           if cart = Cart.find_by_id(@order.reference)
             cart.destroy

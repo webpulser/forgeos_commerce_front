@@ -3,7 +3,7 @@ module OrderHelper
   def payment_methods_list
     available_payments = []
     setting = Setting.first
-    payment_infos = setting.payment_method_list
+    payment_infos = setting.payment_methods
     payment_infos.each do |key, values|
       if values[:active] == 1
         available_payments << key
@@ -19,14 +19,18 @@ module OrderHelper
         payment_tag  += image_tag(payment_infos[payment_method.to_sym][:image])
       end
 
-      if payment_method == :cyberplus and payment_infos[payment_method.to_sym][:payment_config] != 'SINGLE'
-        pm = "#{payment_method}_multi"
-        payment_tag += content_tag(:div, :class => 'paiement' ) do
-          radio_button_tag( :payment_type, pm, params[:payment_type] == pm) +
-          content_tag(:label, t(pm, :scope => [:payment], :count => 1).capitalize )
-        end
-        if payment_infos[payment_method.to_sym][:image].present?
-          payment_tag  += image_tag(payment_infos[payment_method.to_sym][:image].sub(/\.(\w+)$/, '_multi.\1'))
+      if payment_method == :cyberplus and setting.payment_settings_with_env(payment_method)[:payment_config] != 'SINGLE'
+        if current_user.cart.total >= setting.payment_settings_with_env(payment_method)[:muti_minimum_cart].to_f
+          pm = "#{payment_method}_multi"
+          payment_tag += content_tag(:div, :class => 'paiement' ) do
+            radio_button_tag( :payment_type, pm, params[:payment_type] == pm) +
+            content_tag(:label, t(pm, :scope => [:payment], :count => 1).capitalize )
+          end
+          if payment_infos[payment_method.to_sym][:image].present?
+            payment_tag  += image_tag(payment_infos[payment_method.to_sym][:image].sub(/\.(\w+)$/, '_multi.\1'))
+          end
+        else
+          flash[:warning] = setting.payment_settings_with_env(payment_method)[:multi_message]
         end
       end
 
