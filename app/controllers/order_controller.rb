@@ -108,7 +108,7 @@ class OrderController < ApplicationController
       return render :action => 'new'
     end
 
-    env = setting.payment_method_env(payment_type)
+    settings = settings.payment_method_settings_with_env(payment_type)
 
     if params[:validchk]
       @order.payment_type = t(payment_type, :scope => 'payment', :count => 1)
@@ -124,7 +124,7 @@ class OrderController < ApplicationController
             Cart.destroy(@order.reference)
             render :action => 'cheque_payment'
           when t("paypal", :scope => 'payment', :count => 1)
-            @url_paypal = setting.payment_methods[:paypal][env][:url]
+            @url_paypal = settings[:url]
           when t("elysnet", :scope => 'payment', :count => 1)
             @payment = @order.elysnet_encrypted
         end
@@ -233,9 +233,8 @@ class OrderController < ApplicationController
     unless @order.nil?
       setting = Setting.first
       if setting.payment_method_availabe?(:paypal)
-        env = setting.payment_method_env(:paypal)
-        secret = setting.payment_method_settings(:paypal)[:secret]
-        email = setting.payment_method_settings(:paypal)[:email]
+        secret = setting.payment_method_settings_with_env(:paypal)[:secret]
+        email = setting.payment_method_settings_with_env(:paypal)[:email]
         if params[:payment_status] == "Completed" && params[:secret] == secret && params[:receiver_email] == email && params[:mc_gross].to_f.to_s == @order.total.to_f.to_s
           if cart = Cart.find_by_id(@order.reference)
             cart.destroy

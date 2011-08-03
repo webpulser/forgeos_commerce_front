@@ -40,16 +40,11 @@ module OrderHelper
   end
 
   def display_cheque_message
-    if payment_infos = YAML.load(Setting.first.payment_methods)
-      if payment_infos[:cheque] && payment_infos[:cheque][:active] == 1
-        content = Setting.first.cheque_message(@order)
-      else
-        content = t(:not_active, :scope => [:payment]).capitalize
-      end
+    if Setting.current.payment_available?(:cheque)
+      Setting.current.cheque_message(@order)
     else
-      content = t(:not_active, :scope => [:payment]).capitalize
+      t(:not_active, :scope => [:payment]).capitalize
     end
-    return content
   end
 
   def step_order(index=0)
