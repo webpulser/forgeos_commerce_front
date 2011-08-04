@@ -5,14 +5,14 @@ module OrderHelper
     setting = Setting.current
 
     setting.payment_method_availables.each do |payment_method|
-      payment_infos = setting.payment_method_settings(payment)
+      payment_infos = setting.payment_method_settings(payment_method)
       content += payment_radio_button_tag(payment_method, payment_infos[:image])
 
-      if payment_method == :cyberplus and setting.payment_settings_with_env(payment_method)[:payment_config] != 'SINGLE'
-        if current_user.cart.total >= setting.payment_settings_with_env(payment_method)[:muti_minimum_cart].to_f
+      if payment_method.to_sym == :cyberplus and setting.payment_method_settings_with_env(payment_method)[:payment_config] != 'SINGLE'
+        if current_user.cart.total >= setting.payment_method_settings_with_env(payment_method)[:muti_minimum_cart].to_f
           content += payment_radio_button_tag("#{payment_method}_multi", payment_infos[:image_multi])
         else
-          flash[:warning] = setting.payment_settings_with_env(payment_method)[:multi_message]
+          flash[:warning] = setting.payment_method_settings_with_env(payment_method)[:multi_message]
         end
       end
     end
