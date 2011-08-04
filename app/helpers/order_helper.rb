@@ -1,42 +1,31 @@
 module OrderHelper
 
   def payment_methods_list
-    available_payments = []
-    setting = Setting.first
-    payment_infos = setting.payment_methods
-    payment_infos.each do |key, values|
-      if values[:active] == 1
-        available_payments << key
-      end
-    end
-    content = ""
-    available_payments.each do |payment_method|
-      payment_tag = content_tag(:div, :class => 'paiement' ) do
-        radio_button_tag( :payment_type, payment_method, params[:payment_type] == payment_method.to_s) +
-        content_tag(:label, t(payment_method, :scope => [:payment], :count => 1).capitalize )
-      end
-      if payment_infos[payment_method.to_sym][:image].present?
-        payment_tag  += image_tag(payment_infos[payment_method.to_sym][:image])
-      end
+    content = ''
+    setting = Setting.current
+
+    setting.payment_method_availables.each do |payment_method|
+      content += payment_radio_button_tag(payment_method)
 
       if payment_method == :cyberplus and setting.payment_settings_with_env(payment_method)[:payment_config] != 'SINGLE'
         if current_user.cart.total >= setting.payment_settings_with_env(payment_method)[:muti_minimum_cart].to_f
-          pm = "#{payment_method}_multi"
-          payment_tag += content_tag(:div, :class => 'paiement' ) do
-            radio_button_tag( :payment_type, pm, params[:payment_type] == pm) +
-            content_tag(:label, t(pm, :scope => [:payment], :count => 1).capitalize )
-          end
-          if payment_infos[payment_method.to_sym][:image].present?
-            payment_tag  += image_tag(payment_infos[payment_method.to_sym][:image].sub(/\.(\w+)$/, '_multi.\1'))
-          end
+          content += payment_radio_button_tag("#{payment_method}_multi", :image_multi)
         else
           flash[:warning] = setting.payment_settings_with_env(payment_method)[:multi_message]
         end
       end
-
-      content += payment_tag
     end
-    return content
+
+    content
+  end
+
+  def payment_radio_button_tag(payment, image = :image)
+    payment_infos = Setting.current.payment_method_settings(payment)
+    payment_tag = content_tag(:div, :class => 'paiement' ) do
+      radio_button_tag(:payment_type, payment, params[:payment_type] == payment.to_s) +
+      content_tag(:label, t(payment, :scope => [:payment], :count => 1).capitalize )
+    end
+    payment_tag += image_tag(payment_infos[image]) if payment_infos[image].present?
   end
 
   def display_cheque_message
