@@ -9,7 +9,7 @@ module OrderHelper
       content += payment_radio_button_tag(payment_method, payment_infos[:image])
 
       if payment_method.to_sym == :cyberplus and setting.payment_method_settings_with_env(payment_method)[:payment_config] != 'SINGLE'
-        if current_user.cart.total >= setting.payment_method_settings_with_env(payment_method)[:muti_minimum_cart].to_f
+        if current_user.cart.total >= setting.payment_method_settings_with_env(payment_method)[:multi_minimum_cart].to_f
           content += payment_radio_button_tag("#{payment_method}_multi", payment_infos[:image_multi])
         else
           flash[:warning] = setting.payment_method_settings_with_env(payment_method)[:multi_message]
