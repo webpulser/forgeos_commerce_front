@@ -108,7 +108,7 @@ class OrderController < ApplicationController
       return render :action => 'new'
     end
 
-    settings = settings.payment_method_settings_with_env(payment_type)
+    settings = setting.payment_method_settings_with_env(payment_type)
 
     if params[:validchk]
       @order.payment_type = t(payment_type, :scope => 'payment', :count => 1)
