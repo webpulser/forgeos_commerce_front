@@ -103,7 +103,7 @@ class OrderController < ApplicationController
       @order.payment_plans = false
     end
 
-    unless setting.payment_method_availabe?(payment_type)
+    unless setting.payment_method_available?(payment_type)
       flash[:error] = "Ce moyen de paiement n'est pas disponible"
       return render :action => 'new'
     end
