@@ -142,7 +142,7 @@ class OrderController < ApplicationController
 
   def call_autoresponse_cmc_cic
     setting = Setting.first
-    if setting.payment_method_availabe?(:cmc_cic)
+    if setting.payment_method_available?(:cmc_cic)
       oTpe = CMCIC_Tpe.new()
       oHmac = CMCIC_Hmac.new(oTpe)
 
@@ -191,7 +191,7 @@ class OrderController < ApplicationController
 
   def call_autoresponse_cyberplus
     setting = Setting.first
-    if setting.payment_method_availabe?(:cyberplus)
+    if setting.payment_method_available?(:cyberplus)
       if @order = Order.find_by_id(params[:order_id])
         Cart.destroy(@order.reference)
         @order.update_attribute(:transaction_number,params[:trans_id])
@@ -232,7 +232,7 @@ class OrderController < ApplicationController
     @order = Order.find_by_id(params[:invoice])
     unless @order.nil?
       setting = Setting.first
-      if setting.payment_method_availabe?(:paypal)
+      if setting.payment_method_available?(:paypal)
         secret = setting.payment_method_settings_with_env(:paypal)[:secret]
         email = setting.payment_method_settings_with_env(:paypal)[:email]
         if params[:payment_status] == "Completed" && params[:secret] == secret && params[:receiver_email] == email && params[:mc_gross].to_f.to_s == @order.total.to_f.to_s
