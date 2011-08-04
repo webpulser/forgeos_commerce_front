@@ -5,11 +5,12 @@ module OrderHelper
     setting = Setting.current
 
     setting.payment_method_availables.each do |payment_method|
-      content += payment_radio_button_tag(payment_method)
+      payment_infos = setting.payment_method_settings(payment)
+      content += payment_radio_button_tag(payment_method, payment_infos[:image])
 
       if payment_method == :cyberplus and setting.payment_settings_with_env(payment_method)[:payment_config] != 'SINGLE'
         if current_user.cart.total >= setting.payment_settings_with_env(payment_method)[:muti_minimum_cart].to_f
-          content += payment_radio_button_tag("#{payment_method}_multi", :image_multi)
+          content += payment_radio_button_tag("#{payment_method}_multi", payment_infos[:image_multi])
         else
           flash[:warning] = setting.payment_settings_with_env(payment_method)[:multi_message]
         end
@@ -19,13 +20,12 @@ module OrderHelper
     content
   end
 
-  def payment_radio_button_tag(payment, image = :image)
-    payment_infos = Setting.current.payment_method_settings(payment)
+  def payment_radio_button_tag(payment, image = '')
     payment_tag = content_tag(:div, :class => 'paiement' ) do
       radio_button_tag(:payment_type, payment, params[:payment_type] == payment.to_s) +
       content_tag(:label, t(payment, :scope => [:payment], :count => 1).capitalize )
     end
-    payment_tag += image_tag(payment_infos[image]) if payment_infos[image].present?
+    payment_tag += image_tag(image) if image.present?
   end
 
   def display_cheque_message
