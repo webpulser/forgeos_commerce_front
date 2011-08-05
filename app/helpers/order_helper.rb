@@ -30,7 +30,7 @@ module OrderHelper
   end
 
   def display_cheque_message
-    if Setting.current.payment_available?(:cheque)
+    if Setting.current.payment_method_available?(:cheque)
       Setting.current.cheque_message(@order)
     else
       t(:not_active, :scope => [:payment]).capitalize
