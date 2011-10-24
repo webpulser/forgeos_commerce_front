@@ -1,5 +1,5 @@
-require File.join(Rails.plugins[:forgeos_commerce].directory,'app','models','user')
-class User < Person
+load File.join(Gem.loaded_specs['forgeos_commerce'].full_gem_path, 'app', 'models', 'user.rb')
+User.class_eval do
   validates_confirmation_of :email, :if => :confirm_email?
 
   def confirm_email?

@@ -1,1 +1,1 @@
-require 'forgeos/config'
+require 'forgeos/commerce_front'

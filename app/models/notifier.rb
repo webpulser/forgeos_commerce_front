@@ -6,52 +6,45 @@ class Notifier < ActionMailer::Base
   include ActionController::UrlWriter
 
   def validation_user_account(user, password)
-    application = Setting.first.name
-    subject "[#{application}] #{I18n.t(:subject, :scope => [:emails, :new_account])}"
-    from Setting.first.email
-    recipients user.email
-    content_type "text/html"
 
-    body[:user] = user
-    body[:password] = password
+    @user = user
+    @password = password
+
+    mail(
+      :from => Setting.current.email,
+      :to => user.email,
+      :subject => "[#{Setting.current.name}] #{I18n.t(:subject, :scope => [:emails, :new_account])}"
+    )
   end
 
   def reset_password(user)
-    application = Setting.first.name
-    subject "[#{application}] #{I18n.t(:subject, :scope => [:emails, :reset_password])}"
-    from Setting.first.email
-    recipients user.email
-    content_type "text/html"
+    @user = user
 
-    body :user => user
+    mail(
+      :to => user.email,
+      :from => Setting.current.email,
+      :subject "[#{Setting.current.name}] #{I18n.t(:subject, :scope => [:emails, :reset_password])}"
+    )
   end
 
   def newsletter(email)
-    application = Setting.first.name
-    subject "[#{application}] #{I18n.t(:subject, :scope => [:emails, :newsletter])}"
-    recipients email
-    from Setting.first.email
-    content_type "text/html"
-    body[:email] = email
+    @email = email
+    mail(
+      :to => email,
+      :subject "[#{Setting.current.name}] #{I18n.t(:subject, :scope => [:emails, :newsletter])}",
+      :from => Setting.current.email
+    )
   end
 
   def order_confirmation(user, order)
-    application = Setting.first.name
-    content_type "multipart/alternative"
-    recipients user.email
-    from Setting.first.email
-    subject "[#{application}] #{I18n.t(:subject, :scope => [:emails, :order_confirmation], :id => order.reference)}"
-    sent_on Time.now
 
-    part :content_type => 'text/html', :body => render_message(
-      'order_confirmation',
-      :user => user,
-      :order => order,
-      :address_invoice => order.address_invoice,
-      :address_delivery => order.address_delivery,
-      :url => url_for(:action=>"root", :controller=>"url_catcher")
-      )
+    @user = user
+    @order = order
+    @address_delivery = order.address_delivery
+    @address_invoice = order.address_invoice
+    @url = url_for(:action=>"root", :controller=>"url_catcher")
 
+    # Rendering PDF file
     #TODO check PDFKIT and pdf mime_type
     current_body = {
       :user_fullname => order.user.fullname,
@@ -63,28 +56,29 @@ class Notifier < ActionMailer::Base
       :address_delivery => order.address_delivery
     }
 
-   attachment "application/pdf" do |a|
-      a.filename = "#{application.parameterize('_')}_#{I18n.t(:order, :scope => [:emails, :order_confirmation])}_#{order.reference}.pdf"
-      html = render(:file => '/orders/show.pdf.haml', :body => current_body, :layout => 'order_pdf')
+    html = render(:file => '/orders/show.pdf.haml', :body => current_body, :layout => 'order_pdf')
 
-      kit = PDFKit.new(html, :title => "#{I18n.t(:order, :scope => [:emails, :order_confirmation]).capitalize} #{order.reference}" )
-      kit.stylesheets = ["#{RAILS_ROOT}/public/stylesheets/front/invoice-print.css" ]
-      a.body = kit.to_pdf
-    end
+    kit = PDFKit.new(html, :title => "#{I18n.t(:order, :scope => [:emails, :order_confirmation]).capitalize} #{order.reference}" )
+    kit.stylesheets = [Rails.root.join('public', 'stylesheets', 'front', 'invoice-print.css')]
+
+    attachments["#{application.parameterize('_')}_#{I18n.t(:order, :scope => [:emails, :order_confirmation])}_#{order.reference}.pdf"] = kit.to_pdf
+
+    mail(
+      :to => user.email,
+      :from => Setting.current.email,
+      :subject => "[#{Setting.current.name}] #{I18n.t(:subject, :scope => [:emails, :order_confirmation], :id => order.reference)}"
+    )
+
   end
-  
+
   def waiting_for_cheque_notification(order)
-    setting = Setting.first
-    application = setting.name
-    content_type "text/html"
-    recipients order.user.email
-    from setting.email
-    subject "[#{application}] #{I18n.t(:subject, :scope => [:emails, :waiting_for_cheque_notification])}"
-    sent_on Time.now
-    body[:order] = order
+    @order = order
+    mail(
+      :to => order.user.email,
+      :from => Setting.current.email,
+      :subject => "[#{Setting.current.name}] #{I18n.t(:subject, :scope => [:emails, :waiting_for_cheque_notification])}"
+    )
   end
-  
-  
 
   private
   def price_with_currency(price)

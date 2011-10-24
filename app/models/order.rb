@@ -1,4 +1,5 @@
-class Order < ActiveRecord::Base
+load File.join(Gem.loaded_specs['forgeos_commerce'].full_gem_path, 'app', 'models', 'order.rb')
+Order.class_eval do
 
   private
 

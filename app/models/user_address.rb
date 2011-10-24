@@ -1,11 +1,9 @@
-require File.join(Rails.plugins[:forgeos_commerce].directory,'app','models','user_address')
-class UserAddress < Address
+load File.join(Gem.loaded_specs['forgeos_commerce'].full_gem_path, 'app', 'models', 'user_address.rb')
+UserAddress.class_eval do
 
-  Forgeos::CONFIG[:addresses]['mandatory_fields'].each do |fields|
-    puts("\033[01;33mvalidate #{fields.inspect}\033[0m")
-    validates_presence_of fields
+  if Forgeos::CONFIG[:addresses] and mandatory_fields = Forgeos::CONFIG[:addresses]['mandatory_fields']
+    validates *mandatory_fields, :presence => true
   end
-
 
   def to_s
      "#{I18n.t civility, :scope => [:civility, :label]} #{firstname} #{name} <br /> #{address} <br /> #{address_2} <br /> #{zip_code} #{city} <br />#{country.name.upcase}"
@@ -14,5 +12,4 @@ class UserAddress < Address
   def designation
     self.class.to_s.underscore
   end
-
 end

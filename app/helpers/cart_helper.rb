@@ -1,10 +1,11 @@
+# encoding: utf-8
 module CartHelper
 
   # Display a link to remove a cart product from the current cart
   def remove_cart_product_link(cart_product_id)
     link_to_function 'supprimer', remote_function(:url => { :controller => 'cart', :action => 'delete_product', :id => cart_product_id} , :confirm =>  'Voulez-vous vraiment supprimer ce produit de votre panier ?'), :class => 'delete_product'
   end
-  
+
   # Display the voucher form
   def display_voucher
     content = "<span> Bénéficiez-vous d'un code avantage ?</span>"

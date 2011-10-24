@@ -8,9 +8,9 @@ class CartController < ApplicationController
   before_filter :voucher, :only => [:index, :add_voucher]
 
   def index
-    
+
   end
-  
+
   ## add a product
   def add_product
     if params[:id]
@@ -20,7 +20,7 @@ class CartController < ApplicationController
       redirect_to(:back)
     end
   end
-  
+
   ## delete or add a product
   def update_quantity
     cart_product = current_cart.cart_items.find_by_id(params[:id])
@@ -43,7 +43,7 @@ class CartController < ApplicationController
 
     special_offer
     voucher
-    
+
     if request.xhr?
       render(:update) do |page|
         page.replace_html 'tbody', :partial => 'tbody'
@@ -52,7 +52,7 @@ class CartController < ApplicationController
       end
     end
   end
-  
+
   def delete_product
     cart_product = current_cart.cart_items.find_by_id(params[:id])
     current_cart.cart_items.find_all_by_product_id(cart_product.product_id).collect(&:delete) unless cart_product.nil?
@@ -66,7 +66,7 @@ class CartController < ApplicationController
       end
     end
   end
-  
+
   def add_voucher
     voucher = VoucherRule.find_by_id(current_cart.voucher)
     if voucher.nil?
@@ -87,11 +87,11 @@ class CartController < ApplicationController
       end
     end
   end
-    
+
   def get_cart_items_count
     render :text => "#{current_cart.cart_items.count} articles"
-  end  
-    
+  end
+
 private
   def check_voucher_code
     @voucher_code = params[:voucher_code] || session[:voucher_code]
@@ -104,7 +104,7 @@ private
       session.delete(:voucher_code) if session[:voucher_code]
     end if voucher.blank? or voucher.nil?
   end
-  
+
   def special_offer
     begin
       engine :special_offer_engine do |e|
@@ -122,7 +122,7 @@ private
     rescue Exception
     end
   end
-  
+
   def voucher
     begin
       engine :voucher_engine do |e|
@@ -140,5 +140,5 @@ private
     rescue Exception
     end
   end
-  
+
 end
