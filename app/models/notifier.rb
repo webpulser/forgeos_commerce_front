@@ -3,7 +3,7 @@ class Notifier < ActionMailer::Base
 
   helper_method :price_with_currency
   helper :application
-  include ActionController::UrlWriter
+  include Rails.application.routes.url_helpers
 
   def validation_user_account(user, password)
 
@@ -23,7 +23,7 @@ class Notifier < ActionMailer::Base
     mail(
       :to => user.email,
       :from => Setting.current.email,
-      :subject "[#{Setting.current.name}] #{I18n.t(:subject, :scope => [:emails, :reset_password])}"
+      :subject => "[#{Setting.current.name}] #{I18n.t(:subject, :scope => [:emails, :reset_password])}"
     )
   end
 
@@ -31,7 +31,7 @@ class Notifier < ActionMailer::Base
     @email = email
     mail(
       :to => email,
-      :subject "[#{Setting.current.name}] #{I18n.t(:subject, :scope => [:emails, :newsletter])}",
+      :subject => "[#{Setting.current.name}] #{I18n.t(:subject, :scope => [:emails, :newsletter])}",
       :from => Setting.current.email
     )
   end
