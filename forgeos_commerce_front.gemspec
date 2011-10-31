@@ -3,7 +3,7 @@ $:.push File.expand_path("../lib", __FILE__)
 require "forgeos/commerce_front/version"
 
 Gem::Specification.new do |s|
-  s.add_dependency 'forgeos_commerce', '1.9.0'
+  s.add_dependency 'forgeos_commerce', '>= 1.9.1.rc1'
 
   s.name = 'forgeos_commerce_front'
   s.version = Forgeos::CommerceFront::VERSION
